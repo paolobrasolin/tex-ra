@@ -1,0 +1,7 @@
+*
+
+!.gitignore
+!chapters/
+!ra.pl
+!ra.tex
+!README.md

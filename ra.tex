@@ -1,0 +1,38 @@
+\documentclass[10pt,twoside,openright]{memoir}
+\usepackage[paperwidth=6in,paperheight=9in,bindingoffset=.75in]{geometry}
+
+\usepackage{kmath,kerkis}
+\usepackage{inconsolata}
+\usepackage[T1]{fontenc}
+\usepackage[final]{microtype}
+
+\usepackage[utf8]{inputenc}
+
+\author{Sam Hughes}
+\title{ra}
+
+\makeatletter
+\def\maketitle{
+  \thispagestyle{empty}
+  \null\vfill\centering
+  {\fontsize{8cm}{1em}\selectfont \texttt{\@title}}
+  {\vskip 1cm \hrulefill \vskip 1cm}
+  {\huge \@author}
+  \vfill\null\cleardoublepage
+}
+\makeatother
+
+\newcommand{\goreal}{\raggedright}
+\newcommand{\gobetween}{\centering}
+\newcommand{\gotannaka}{\raggedleft}
+\newcommand{\switchsymbol}{\bigskip{\Huge*}}
+
+\newcommand{\magic}[1]{\texttt{#1}}
+
+\begin{document}
+\frontmatter
+\maketitle
+\tableofcontents
+\mainmatter
+\input{chapters}
+\end{document}
