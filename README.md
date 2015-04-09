@@ -5,6 +5,4 @@ The website also contains many appendices and a lot of discussion.
 `ra-binder` is a script written by me.
 It crudely binds `ra` into a book.
 
-`ra` is &copy; Sam Hughes.
-
-Be respectful of his work.
+`ra` is &copy; Sam Hughes. Be respectful of his work.
