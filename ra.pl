@@ -4,45 +4,78 @@
 use strict;
 use warnings;
 
-# We need to fetch files from urls
-use LWP::Simple;
-# and correctly encode them
-use Encode;
-#use File::Slurp;
+# Enable autoflush.
+$|++;
+
+# ================================================================ FILE FETCHING
+
+# We don't want to hog the server while debugging!
+my $local_mode;
+# Uncomment to enable local mode:
+#$local_mode++;
+
+# Use just what is needed.
+if ($local_mode) {
+  use File::Slurp;
+  print "Working locally.\n";
+} else {
+  use LWP::Simple;
+  use Encode;
+}
+
+# Set up local and remote location of files.
+my $dir_root = '_internet/';
+my $url_root = 'http://qntm.org/';
+
+# File fetching subroutine.
+sub Fetch {
+  my $file_name = $_[0];
+  my $file;
+  printf "%-*s", 35, 'Fetching '.$file_name.'...';
+  if ($local_mode) {
+    $file = read_file $dir_root.$file_name;
+  } else {
+    $file = get $url_root.$file_name;
+    die "Error!\n" unless defined $file;
+    $file = encode('utf-8', $file);
+  }
+  print "Done!\n";
+  return $file;
+}
 
 # ================================================================ PROCESS INDEX
 
 # ------------------------------------------------------------------- FETCH HTML
 
-print "Fetching index... ";
-#my $i = read_file( '_internet/ra' ) ;
-my $i = get "http://qntm.org/ra";
-die "Error!\n" unless defined $i;
-$i = encode('utf-8', $i);
+my $i = Fetch 'ra';
+
+printf "%-*s", 35, 'Processing '.'ra'.'...';
+
+# Chapter "aum" needs its title manually fixed to render devanagari
+$i =~ s/ॐ/{\\dn:}/;
 
 # -------------------------------------------------------------- EXTRACT CONTENT
 
 # Extract the id (i.e. url) and the title of each chapter.
-my @ids = ( $i =~ /^\s+href='\/(.*)'$/gm );
-my @titles = ( $i =~ /^\s+>(.*)<\/a>$/gm );
+my @ids = ($i =~ /^\s+href='\/(.*)'$/gm);
+my @titles = ($i =~ /^\s+>(.*)<\/a>$/gm);
 
-# Chapter "aum" needs its title manually fixed to render devanagari
-$titles[15] = '{\dn:}';
-
-# Now we isolate the introduction.
 # Remove vertical whitespace for easier handling.
 $i =~ s/\v+//g;
-# Extract the introduction
-$i =~ s/.*(?:id="content">)(.*?)(?:<p><small>).*/$1/;
-# Do a basic formatting
-$i =~ s/<i>(bona fide)<\/i>/\\emph{$1}/g;
-$i =~ s/<.><.>//g;
-$i =~ s/<..><..>/\\\\~\\\\\n/g;
+
+# Extract the teaser.
+my $teaser = $1 if $i =~ s/.*(?:id="content">)(.*?)(?:<p><small>).*/$1/;
+# Do some basic formatting.
+$teaser =~ s/<i>(bona fide)<\/i>/\\emph{$1}/g;
+$teaser =~ s/<.><.>//g;
+$teaser =~ s/<..><..>/\\\\~\\\\\n/g;
 
 # ----------------------------------------------------------------------- OUTPUT
 
+my $f;
+
 # Write the latex chapter list.
-die "Error!\n" unless open(my $f, '>', 'chapters.tex');
+die "Error!\n" unless open($f, '>', 'chapters.tex');
 for my $i (0 .. $#ids) {
   print $f '\chapter{'."$titles[$i]}\n";
   print $f '\input{chapters/'."$ids[$i]}\n";
@@ -50,9 +83,9 @@ for my $i (0 .. $#ids) {
 close $f;
 
 # Write the latex teaser.
-die "Error!\n" unless open(my $g, '>', 'teaser.tex');
-print $g $i;
-close $g;
+die "Error!\n" unless open($f, '>', 'teaser.tex');
+print $f $teaser;
+close $f;
 
 print "Done!\n";
 
@@ -60,7 +93,7 @@ print "Done!\n";
 
 # Hash of code needing special care (HTML => LATEX).
 my %specials = (
-  # using unicode and xetex spares these: áãéíóöāćčīÞ
+  # Using unicode and xetex spares these: áãéíóöāćčīÞ
   'א**' => '$\aleph^{**}$',
   '√3' => '$\sqrt{3}$',
   'L<sup>A</sup>T<sub>E</sub>X' => '\LaTeX',
@@ -74,6 +107,7 @@ my %specials = (
   'χ' => '$\chi$',
   'EMμ' => '$\mathrm{EM}\mu$',
   '&amp;' => '\&',
+  'ॐ' => '{\dn:}'
 );
 
 # Hash of typos I found (ERROR => FIX).
@@ -92,11 +126,9 @@ foreach (@ids) {
 
   # ----------------------------------------------------------------- FETCH HTML
 
-  print "Fetching chapter $_... ";
-  #my $t = read_file( '_internet/'.$_ );
-  my $t = get "http://qntm.org/".$_;
-  die "Error!\n" unless defined $t;
-  $t = encode('utf-8', $t);
+  my $t = Fetch $_;
+
+  printf "%-*s", 35, 'Processing '.$_.'...';
 
   # Remove vertical whitespace for easier handling.
   $t =~ s/\v+/ /g;
@@ -197,16 +229,18 @@ foreach (@ids) {
   # Close and format unclosed double quotes.
   $t =~ s/"(.*)$/``$1''/gm;
 
-  #$t =~ s/[[:ascii:]]//g;
-  #print $t;
-  
   # --------------------------------------------------------------------- OUTPUT
-  die "Error!\n" unless open(my $f, '>', 'chapters/'.$_.'.tex');
+
+  my $f;
+
+  die "Error!\n" unless open($f, '>', 'chapters/'.$_.'.tex');
   print $f $t;
   close $f;
 
   print "Done!\n";
 
 }
+
+print "Success!\n";
 
 # ========================================================================== EOF
