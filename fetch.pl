@@ -9,37 +9,43 @@ $|++;
 
 # ================================================================ FILE FETCHING
 
-# We don't want to hog the server while debugging!
-my $local_mode;
-# Uncomment to enable local mode:
-#$local_mode++;
-
-# Use just what is needed.
-if ($local_mode) {
-  use File::Slurp;
-  print "Working locally.\n";
-} else {
-  use LWP::Simple;
-  use Encode;
-}
+# Needed modules:
+use File::Slurp;
+use LWP::Simple;
+use Encode;
 
 # Set up local and remote location of files.
-my $dir_root = '_internet/';
+my $dir_root = 'html/';
 my $url_root = 'http://qntm.org/';
+
+# Create local dir
+mkdir $dir_root;
 
 # File fetching subroutine.
 sub Fetch {
-  my $file_name = $_[0];
+  my $filename = $_[0];
+  print "\nFilename: ".$filename."\n";
+
+  my $local_filename = $dir_root.$filename;
+  my $remote_filename = $url_root.$filename;
+
   my $file;
-  printf "%-*s", 35, 'Fetching '.$file_name.'...';
-  if ($local_mode) {
-    $file = read_file $dir_root.$file_name;
-  } else {
-    $file = get $url_root.$file_name;
-    die "Error!\n" unless defined $file;
+  if (!-f $local_filename) {
+    print "  Fetching remote file...";
+    $file = get $remote_filename;
+    die " Download error!\n" unless defined $file;
     $file = encode('utf-8', $file);
+    my $foo;
+    die " Writing error!\n" unless open($foo, '>', $local_filename);
+    print $foo $file;
+    close $foo;
+  } else {
+    print "  Fetching local copy...";
   }
-  print "Done!\n";
+
+  $file = read_file $local_filename;
+
+  print " Done!\n";
   return $file;
 }
 
@@ -49,7 +55,7 @@ sub Fetch {
 
 my $i = Fetch 'ra';
 
-printf "%-*s", 35, 'Processing '.'ra'.'...';
+print "  Processing...";
 
 # Chapter "aum" needs its title manually fixed to render devanagari
 $i =~ s/ॐ/{\\dn:}/;
@@ -87,7 +93,7 @@ die "Error!\n" unless open($f, '>', 'teaser.tex');
 print $f $teaser;
 close $f;
 
-print "Done!\n";
+print " Done!\n";
 
 # ============================================================= PROCESS CHAPTERS
 
@@ -128,7 +134,7 @@ foreach (@ids) {
 
   my $t = Fetch $_;
 
-  printf "%-*s", 35, 'Processing '.$_.'...';
+  printf "  Processing...";
 
   # Remove vertical whitespace for easier handling.
   $t =~ s/\v+/ /g;
@@ -237,10 +243,10 @@ foreach (@ids) {
   print $f $t;
   close $f;
 
-  print "Done!\n";
+  print " Done!\n";
 
 }
 
-print "Success!\n";
+print "\nComplete success!\n\n";
 
 # ========================================================================== EOF
