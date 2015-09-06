@@ -1,7 +1,7 @@
 *
 
 !.gitignore
-!chapters/
-!ra.pl
-!ra.tex
+!fetch.pl
+!main.tex
+!make.sh
 !README.md
