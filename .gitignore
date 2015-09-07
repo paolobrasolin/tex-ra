@@ -3,5 +3,9 @@
 !.gitignore
 !fetch.pl
 !main.tex
-!make.sh
+!cover.tex
+!make-main.sh
+!make-cover.sh
+!glyph.eps
+!wadjet.eps
 !README.md

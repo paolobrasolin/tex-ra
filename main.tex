@@ -33,6 +33,7 @@
 
 \usepackage{fontspec}
 \setmainfont{Linux Libertine O}
+\setmonofont{Linux Libertine Mono O}
 %\setmainfont{LinLibertine_R}%
 %  [ Extension = .otf
 %  , FontFace = {m} {it}{*I}
@@ -78,8 +79,18 @@
 %
 %\usepackage{color}
 %
-%\author{Sam Hughes}
-%\title{ra}
+
+
+%\usepackage[%pdftex,
+%            pdfauthor={Your Name},
+%            pdftitle={The Title},
+%            pdfsubject={The Subject},
+%            pdfkeywords={Some Keywords},
+%            pdfproducer={Latex with hyperref, or other system},
+%            pdfcreator={pdflatex, or other tool}]{hyperref}
+
+\author{Sam Hughes}
+\title{ra}
 
 %\definecolor{magic}{rgb}{1.0, 0.5, 0.0}
 \newcommand{\magic}[1]{{\ttfamily\bfseries#1}}
@@ -98,20 +109,7 @@
 %  \clearpage
 %}
 %
-%\makeatletter
-%\renewcommand{\maketitle}{
-%  \cleartorecto\thispagestyle{empty}
-%  \null\vfill
-%  \begin{center}
-%    \fontsize{8cm}{1em}\magic{\@title}
-%    \vskip 1cm \hrulefill \vskip 1cm
-%    \huge\@author
-%  \end{center}
-%  \vfill\null
-%  \clearpage
-%}
-%\makeatother
-%
+
 %\newcommand{\maketeaser}{
 %  \cleartorecto\thispagestyle{empty}
 %  \null\vfill
@@ -122,16 +120,6 @@
 %
 %\renewcommand\contentsname{Chapters}
 %
-
-\newcommand{\makeleaf}{%
-  \cleardoublepage}
-
-\newcommand{\maketoc}{
-  \cleartoverso
-  \tableofcontents*
-  \clearpage
-}
-
 
 \newcommand*\circled[1]{\tikz[baseline=(char.base)]{
     \node[shape=circle,draw,inner sep=1pt,fill=black,white](char){#1};}}
@@ -145,15 +133,19 @@
 \makeevenfoot{tannaka}{}{\circled{\thepage}}{}
 \makeoddfoot{tannaka}{}{\circled{\thepage}}{}
 
-\newcommand{\goreal}   {%\raggedright
-  \clearpage\pagestyle{real}}
-\newcommand{\gobetween}{%\centering  
-  \clearpage\pagestyle{empty}XXXXXX}
-\newcommand{\gotannaka}{%\raggedleft 
-  \clearpage\pagestyle{tannaka}}
+\newcommand{\goreal}   {\clearpage\pagestyle{real}}
+\newcommand{\gobetween}{\clearpage\pagestyle{empty}\topskip=0in}
+\newcommand{\gotannaka}{\clearpage\pagestyle{tannaka}}
+
+
+\newcommand{\sectionline}{%
+  \nointerlineskip\vspace{\baselineskip}%
+  \hfill{\Large ☉}\hfill\strut%
+  \par\nointerlineskip\vspace{\baselineskip}}
 
 \newcommand{\gostar}%{\smallskip{\Huge$*\vphantom|$}\smallskip}
-{\par\noindent\hfill\hrulefill~\raisebox{-0.5ex}[0.5ex][0.5ex]{•}~\hrulefill\hfill\strut\par}
+%{\par\noindent\hfill\hrulefill~\raisebox{-0.5ex}[0.5ex][0.5ex]{☉}~\hrulefill\hfill\strut\par}
+{\vspace*{\fill}\sectionline\vspace*{\fill}}
 
 \newcommand{\makechapters}{
   \cleartorecto
@@ -165,18 +157,47 @@
 
 \usepackage[final]{microtype}
 
-\pagestyle{plain}
 
 
 \begin{document}
-  %\goreal\lipsum\lipsum\lipsum
-  %\gotannaka\lipsum\lipsum\lipsum
-  \makeleaf
   \frontmatter
-  %  \maketitle
-  %  \maketeaser
-    \maketoc
+    \pagestyle{empty}
+    \null\cleartorecto
+    \begingroup\centering
+      \vspace*{\fill}\includegraphics[height=40pt]{glyph}\par
+    \endgroup
+    \cleartorecto\thispagestyle{empty}
+    \begingroup\centering
+      \null\bigskip
+      {\huge Sam Hughes}\\%
+      \bigskip%
+      {\fontsize{50pt}{60pt}\ttfamily ra}%
+      \vfill
+      \includegraphics[height=80pt]{wadjet}
+      \vfill
+    \endgroup
+    \clearpage\thispagestyle{empty}
+    \begingroup\centering
+      \vfill
+      September 2015\\
+      Limited edition single copy\\
+      \bigskip
+      \emph{Dedicato a \ldots}\\
+      \vfill
+      {\ttfamily ra} © 2011--2014 Sam Hughes\\
+      Cover, typesetting, editing: Paolo al-Imk\=an\=\i\ Brasolin\par
+    \endgroup
+    \cleartorecto
+    \tableofcontents*
   \mainmatter
-    \makechapters
+    \lipsum\lipsum\lipsum%\makechapters
   \backmatter
+    \pagestyle{empty}
+    \cleartorecto
+    \cleartoverso
+    \begin{vplace}[0.5]
+      \centering
+      Printed in \ldots
+    \end{vplace}
+    \cleartoverso\null
 \end{document}

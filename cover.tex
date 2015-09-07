@@ -1,0 +1,75 @@
+\documentclass[ 10pt
+              , showtrims
+              ]{memoir}
+
+%\usepackage[driver=none,pass,showframe]{geometry}
+
+\usepackage{calc}
+
+\def\mydeflength#1#2{ % \defLength{name}{value}
+ \expandafter\newlength\csname#1\endcsname
+ \expandafter\setlength\csname#1\endcsname{#2}}
+
+\mydeflength{wL}{10.833in} % width
+\mydeflength{hL}{8in}      % height
+\mydeflength{bL}{0.125in}  % bleed
+\mydeflength{iL}{0.25in}   % inset
+\mydeflength{gL}{0.8333in} % gutter width
+
+\setstocksize{\hL+2\bL}{\wL+2\bL}
+\settrimmedsize{\hL}{\wL}{*}
+\settrims{\bL}{\bL}
+\setlrmarginsandblock{1in}{1in}{*}
+\setulmarginsandblock{1in}{1in}{*}
+%\setheadfoot{0in}{0in}
+%\setheaderspaces{*}{0in}{*}
+%\setmarginnotes{0in}{0in}{0in}
+\checkandfixthelayout
+\trimXmarks
+
+\pagestyle{empty}
+\usepackage{xcolor}
+
+
+\usepackage{fontspec}
+\setmainfont{Linux Libertine O}
+\setmonofont{Linux Libertine Mono O}
+%\setmainfont{LinLibertine_R}%
+%  [ Extension = .otf
+%  , FontFace = {m} {it}{*I}
+%  , FontFace = {b} {n} {*B}
+%  , FontFace = {bx}{n} {*Z}
+%  ]
+
+\usepackage{eso-pic}
+\usepackage{tikzpagenodes}
+
+\makeatletter
+\newcommand\drawbaselinegrid{%
+  \begin{tikzpicture}[overlay,remember picture,dotted,ultra thick]
+    \coordinate (size ref) at (-\bL,-\bL);
+    \coordinate (trim ref) at (   0,   0);
+    \coordinate (safe ref) at ( \iL, \iL);
+    \draw[black]   (size ref) rectangle ++(\wL+2\bL,\hL+2\bL);
+    \draw[red]     (trim ref) rectangle ++(\wL,\hL);
+    \draw[magenta] (safe ref) rectangle ++(\wL-2\iL,\hL-2\iL);
+    \begin{scope}[even odd rule, gray]
+      \fill (trim ref) rectangle ++(\wL,\hL)
+            (size ref) rectangle ++(\wL+2\bL,\hL+2\bL);
+    \end{scope}
+    \draw [blue] (trim ref)++(\wL/2-\gL/2,0) rectangle ++(\gL,\hL);
+  \end{tikzpicture}}
+\makeatother
+
+\AddToShipoutPicture{\drawbaselinegrid}
+
+\RequireXeTeX
+
+\usepackage[final]{microtype}
+
+\begin{document}%
+\pagecolor{black}%
+\begin{tikzpicture}[overlay,remember picture]
+  \node at (0,0) {\includegraphics{cover.jpg}};
+\end{tikzpicture}%
+\end{document}
