@@ -18,7 +18,7 @@ use Encode;
 my $dir_root = 'html/';
 my $url_root = 'http://qntm.org/';
 
-# Create local dir
+# Create local storage directory.
 mkdir $dir_root;
 
 # File fetching subroutine.
@@ -49,90 +49,77 @@ sub Fetch {
   return $file;
 }
 
-# ================================================================ PROCESS INDEX
-
-# ------------------------------------------------------------------- FETCH HTML
-
-my $i = Fetch 'ra';
-
-print "  Processing...";
-
-# Chapter "aum" needs its title manually fixed to render devanagari
-$i =~ s/ॐ/{\\dn:}/;
-
-# -------------------------------------------------------------- EXTRACT CONTENT
-
-# Extract the id (i.e. url) and the title of each chapter.
-my @ids = ($i =~ /^\s+href='\/(.*)'$/gm);
-my @titles = ($i =~ /^\s+>(.*)<\/a>$/gm);
-
-# Remove vertical whitespace for easier handling.
-$i =~ s/\v+//g;
-
-# Extract the teaser.
-my $teaser = $1 if $i =~ s/.*(?:id="content">)(.*?)(?:<p><small>).*/$1/;
-# Do some basic formatting.
-$teaser =~ s/<i>(bona fide)<\/i>/\\emph{$1}/g;
-$teaser =~ s/<.><.>//g;
-$teaser =~ s/<..><..>/\\\\~\\\\\n/g;
-
-# ----------------------------------------------------------------------- OUTPUT
-
-my $f;
-
-# Write the latex chapter list.
-die "Error!\n" unless open($f, '>', 'chapters.tex');
-for my $i (0 .. $#ids) {
-  print $f '\chapter{'."$titles[$i]}\n";
-  print $f '\input{chapters/'."$ids[$i]}\n";
-}
-close $f;
-
-# Write the latex teaser.
-die "Error!\n" unless open($f, '>', 'teaser.tex');
-print $f $teaser;
-close $f;
-
-print " Done!\n";
-
 # ============================================================= PROCESS CHAPTERS
 
-# Hash of code needing special care (HTML => LATEX).
-my %specials = (
-  # Using unicode and xetex spares these: áãéíóöāćčīÞ
-  'א**' => '$\aleph^{**}$',
-  '√3' => '$\sqrt{3}$',
-  'L<sup>A</sup>T<sub>E</sub>X' => '\LaTeX',
-  '+ <var>S</var><sub><var>t</var>;<var>&tau;</var></sub>' => '$+S_{t;\tau;}$',
-  '10<sup>18</sup>' => '$10^{18}$',
-  'XE<sub>171</sub>' => '$\mathrm{XE}_{171}$',
-  'SO<sub>2</sub>' => '\ce{SO}',
-  'O<sub>2</sub>' => '\ce{O2}',
-  'ζ' => '$\zeta$',
-  'ι' => '$\iota$',
-  'χ' => '$\chi$',
-  'EMμ' => '$\mathrm{EM}\mu$',
-  '&amp;' => '\&',
-  'ॐ' => '{\dn:}'
+my %edits = (
+  "city"          => { "'Scuse" => "’Scuse"
+                        },
+  "sufficiently"  => { '<tt></tt>zui ixuv ixuv' => '<tt>zui ixuv ixuv</tt>',
+                       '<tt></tt>dulaku' => '<tt>dulaku</tt>',
+                       "my tutors' knowledge" => "my tutors’ knowledge",
+                       "two weeks' preparation" => "two weeks’ preparation" },
+  "ignorance"     => { "- crucially -" => "-- crucially --" },
+  "isnt"          => { "Atlantis' fuel system" => "Atlantis’ fuel system",
+                       "Atlantis' last engine" => "Atlantis’ last engine",
+                       "40 miles' range" => "40 miles’ range",
+                       "the Fernos' spot" => "the Fernos’ spot",
+                       'O<sub>2</sub>' => 'O₂' },
+  "know"          => { '<tt></tt>uum' => '<tt>uum</tt>',
+                       "four weeks' rent" => "four weeks’ rent",
+                       '+ <var>S</var><sub><var>t</var>;<var>&tau;</var></sub>' => '$+S_{t\,;\tau\,;}$' },
+  "ragdoll"       => { "Tómas' response" => "Tómas’ response" },
+  "broken"        => { "Atlantis' nose cone" => "Atlantis’ nose cone" },
+  "thaumonuclear" => { 'SO<sub>2</sub>' => 'SO₂' },
+  "jesus"         => {},
+  "space"         => { "five years' time" => "five years’ time",
+                       'O<sub>2</sub>' => 'O₂' },
+  "yantra"        => {},
+  "daemons"       => { "St. Nicholas' Hill" => "St.~Nicholas’ Hill",
+                       'L<sup>A</sup>T<sub>E</sub>X' => '\LaTeX' },
+  "abstract"      => { "א" => "{א}" },
+  "death"         => {},
+  "zero"          => {},
+  "aum"           => {},
+  "bare"          => { "yards' difference" => "yards’ difference" },
+  "people"        => {},
+  "deeper"        => { "mages' toolboxes" => "mages’ toolboxes",
+                       "'88" => "’88",
+                       "'89" => "’89" },
+  "cabal"         => { "'72" => "’72" },
+  "protagonism"   => { '..........' => 'HOLY CRAP DOTS' },
+  "scrap"         => { '10<sup>18</sup>' => '10¹⁸' },
+  "inferno"       => {},
+  "darkness"      => {},
+  "direct"        => { "Henders' simple answer" => "Henders’ simple answer",
+                       '10<sup>18</sup>' => '10¹⁸' },
+  "war"           => {},
+  "real"          => { "full Moons' worth" => "full Moons’ worth",
+                       'XE<sub>171</sub>' => 'XE₁₇₁' },
+  "hate"          => { "Actuals' next step" => "Actuals’ next step" },
+  "thursdayism"   => {},
+  "akheron"       => {},
+  "all"           => { "the screens' content" => "the screens’ content" },
+  "rajesh"        => { "read others' papers" => "read others’ papers",
+                       "'72" => "’72",
+                       "'73" => "’73" },
+  "machine"       => { "astronauts' lives" => "astronauts’ lives",
+                       "א" => "{א}" },
+  "work"          => {},
+  "just"          => { "'ports" => "’ports",
+                       "the blinds' edges" => "the blinds’ edges" },
+  "destructor"    => {}
 );
 
-# Hash of typos I found (ERROR => FIX).
-my %typos = (
-  # sufficiently
-  '<tt></tt>zui ixuv ixuv' => '<tt>zui ixuv ixuv</tt>',
-  '<tt></tt>dulaku' => '<tt>dulaku</tt>',
-  # know
-  '<tt></tt>uum' => '<tt>uum</tt>',
-  # protagonism
-  '<P>' => '<p>'
-);
+#  '√3'
+#  'EMμ'
+
 
 # Now we process each chapter.
-foreach (@ids) {
+while (my ($id, $edit) = each %edits) {
 
   # ----------------------------------------------------------------- FETCH HTML
 
-  my $t = Fetch $_;
+  my $t = Fetch $id;
 
   printf "  Processing...";
 
@@ -141,11 +128,9 @@ foreach (@ids) {
   
   # ------------------------------------------------------------ EXTRACT CONTENT
 
-  # Set starting marker.
-  # First chapter has no "Previously" link and is handled by second option:
+  # Starting marker. 1st chapter has no "Prev." It's handled by the 2nd option:
   my $bef = 'Previously<\/a><\/h4>|id="content">';
-  # Set ending marker.
-  # Every chapter ends with '<p>&nbsp', some with styling:
+  # Ending marker. Every chapter ends with '<p>&nbsp', some with styling:
   my $aft = '<p[^>]*>\&nbsp;';
   # Extract everything between markers.
   # Note central group must be lazy: (e.g. see chapter "just")
@@ -153,14 +138,14 @@ foreach (@ids) {
 
   # ------------------------------------------------------------------ TIDY HTML
 
-  # Strip all comments.
+  # Strip comments.
   $t =~ s/<!--.*?-->//g;
 
-  # Remove excess horizontal whitespace.
+  # Strip excess horizontal whitespace (leading, inter-tags, trailing).
   $t =~ s/(^|>)\s+(<|$)/$1$2/g;
 
   # Chapter "work" has a <div> used for alignment.
-  if ($_ eq 'work') {
+  if ($id eq 'work') {
     my $patch = '';
     # Catch <div>s content.
     $patch = $1 if $t =~ /<div[^>]*>(.*)<\/div>/;
@@ -170,9 +155,13 @@ foreach (@ids) {
     $t =~ s/<div.*div>/$patch/;
   }
 
+  if ($id eq 'protagonism') {
+    $t =~ s/<P>/<p>/g;
+  }
+
   # Fix typos.
-  while (my ($typo, $fix) = each %typos) {
-    $t =~ s/\Q$typo/$fix/g;
+  while (my ($original, $fixed) = each $edit) {
+    $t =~ s/\Q$original/{\\color{green}$fixed}/g;
   }
 
   # ----------------------------------------------------------------- CHECKPOINT
@@ -183,30 +172,25 @@ foreach (@ids) {
   # But that's not what we want.
 
   # I'll just leave this here for sanity checks:
-  #$t =~ s/(<\/(?:p|h4)>)/$1\n\n/g;
+#  $t =~ s/(<\/(?:p|h4)>)/$1\n\n/g;
 
   # Note: css styling is not really uniform since some semicolons are missing.
 
   # ----------------------------------------------------------- CONVERT TO LATEX
 
-  # Format emphasis.
-  $t =~ s/<(i|em)>(.*?)<\/\1>/\\emph{$2}/g;
-  # Need a second pass to handle nesting!
-  $t =~ s/<(i|em)>(.*?)<\/\1>/\\emph{$2}/g;
+  # Format emphasis. Two passes to handle nesting.
+  $t =~ s/<(i|em)>(.*?)<\/\1>/{\\color{cyan}\\emph{$2}}/g;
+  $t =~ s/<(i|em)>(.*?)<\/\1>/{\\color{blue}\\emph{$2}}/g;
 
   # Format magic.
-  $t =~ s/<(tt|code)>(.*?)<\/\1>/\\magic{$2}/g;
+  $t =~ s/<(tt|code)>(.*?)<\/\1>/{\\color{purple}\\magic{$2}}/g;
 
   # Format the stars.
-  $t =~ s/>\*</>\\gostar</g;
-
-  # Format words and letters needing special care.
-  while (my ($html, $latex) = each %specials) {
-    $t =~ s/\Q$html/$latex/g;
-  }
+#  $t =~ s/>\*</>\\gostar</g;
+  # Actually, don't. I am just going to suppress them anyways.
 
   # Format math.
-  $t =~ s/<var>(.*?)<\/var>/\$$1\$/g;
+  $t =~ s/<var>(.*?)<\/var>/{\\color{orange}\$$1\$}/g;
 
   # Aligning every paragraph would not be smart. Changing alignment at
   # transitions between worlds is, so we need to detect them.
@@ -215,31 +199,54 @@ foreach (@ids) {
   $t =~ s/<(p|h4)[^>]*right[^>]*>(.*?)<\/\1>/r-{$2}-r/g;
   $t =~ s/<(p|h4)[^>]*center[^>]*>(.*?)<\/\1>/c-{$2}-c/g;
   $t =~ s/<(p|h4)>(.*?)<\/\1>/l-{$2}-l/g;
-  # Now we set the initial world
-  $t =~ s/^l-{/\\goreal\n\n/;
-  $t =~ s/^c-{/\\gobetween\n\n/;
-  $t =~ s/^r-{/\\gotannaka\n\n/;
-  # and format transitions with user defined commands
-  $t =~ s/}-[^l]l-{/\n\n\\goreal\n\n/g;
-  $t =~ s/}-[^c]c-{/\n\n\\gobetween\n\n/g;
-  $t =~ s/}-[^r]r-{/\n\n\\gotannaka\n\n/g;
-  # while ignoring redundant information
-  $t =~ s/}-(l|c|r)\1-{/\n\n/g;
-  $t =~ s/}-(l|c|r)$/\n/;
-  # Done!
 
-  # Format single quotes discerning apostrophes.
-  $t =~ s/\B'(.*?)'\B/`$1'/gm;
-  # Format closed double quotes.
-  $t =~ s/"(.*?)"/``$1''/gm;
-  # Close and format unclosed double quotes.
-  $t =~ s/"(.*)$/``$1''/gm;
+  # Suppress the stars.
+  $t =~ s/.-{\*}-.//g;
+
+  # Ok, nice. Now we have a single line nicely formatted as
+  #   a-{...}-ab-{...}-bc-{...  ...  ...}-yz-{...}-z
+  # where letters denote alignment data.
+
+  # Now we set the initial world
+  $t =~ s/^l-{/\\go*{reality}\n\n/;
+  $t =~ s/^c-{/\\go*{between}\n\n/;
+  $t =~ s/^r-{/\\go*{tannaka}\n\n/;
+  # and format transitions with user defined commands
+  $t =~ s/}-[^l]l-{/\n\n\\go{reality}\n\n/g;
+  $t =~ s/}-[^c]c-{/\n\n\\go{between}\n\n/g;
+  $t =~ s/}-[^r]r-{/\n\n\\go{tannaka}\n\n/g;
+  # while ignoring redundant
+  $t =~ s/}-(l|c|r)\1-{/\n\n/g;
+  # and trailing information
+  $t =~ s/}-(l|c|r)$/\n/;
+
+  # Format ellipsis.
+  $t =~ s/\.\.\./…/g;
+
+  # A pinch of dashes.
+  $t =~ s/\s?--\s?/ — /g;
+  # Ampersands.
+  $t =~ s/&amp;/\\&/g;
+
+  # Format apostrophes. (Handles emphasis on the left.)
+  $t =~ s/\b[}]?'\b/’/g;
+
+  # Catch closed single quotes.
+  $t =~ s/'(.*?)'/<$1>/gm;
+  # Catch closed double quotes.
+  $t =~ s/"(.*?)"/<$1>/gm;
+  # Catch unclosed double quotes.
+  $t =~ s/"(.*)$/<$1>/gm;
+
+  # Format first and second level quotes, british style.
+  $t =~ s/<([^<>]*)>/‘$1’/g;
+  $t =~ s/<([^<>]*)>/“$1”/g;
 
   # --------------------------------------------------------------------- OUTPUT
 
   my $f;
 
-  die "Error!\n" unless open($f, '>', 'chapters/'.$_.'.tex');
+  die "Error!\n" unless open($f, '>', 'chapters/'.$id.'.tex');
   print $f $t;
   close $f;
 
