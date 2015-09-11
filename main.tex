@@ -2,6 +2,16 @@
 
 \documentclass[10pt]{memoir}
 
+% ====================================================================== FONTS =
+
+%\usepackage{mathspec}
+%\setmathsfont(Digits,Latin,Greek)
+%  [Numbers={Lining,Proportional}]{Linux Libertine O}
+\usepackage{fontspec}
+\setmainfont{Linux Libertine O}
+\setmonofont[Scale=MatchLowercase]{Hack}
+\newfontfamily\devanagarifont{Annapurna SIL}
+\newfontfamily\displayfont{Linux Libertine Display O}
 
 % ===================================================================== LAYOUT =
 
@@ -14,8 +24,7 @@
 \mydeflength{qI}{0.25in}  % 1/4 inch
 \mydeflength{eI}{0.125in} % 1/8 inch
 
-
-% ----------------------------------------------------------------------- PAGE -
+% ------------------------------------------------------------------- GEOMETRY -
 
 \mydeflength{wL}{5in}     % width
 \mydeflength{hL}{8in}     % height
@@ -26,7 +35,7 @@
 \setstocksize{\hL+2\bL}{\wL+\bL}
 \settrimmedsize{\hL}{\wL}{*}
 \settrims{\bL}{\bL}
-\setlrmarginsandblock{\sL+\eI}{\iL+\eI}{*}
+\setlrmarginsandblock{\sL+\qI}{\iL+\qI}{*}
 \setulmarginsandblock{\iL+\qI}{\iL+2\qI}{*}
 \setheadfoot{\headheight}{\qI}
 \setheaderspaces{0in}{*}{*}
@@ -34,195 +43,40 @@
 \checkandfixthelayout
 \trimXmarks
 
-
-% ====================================================================== FONTS =
-
-\usepackage{mathspec}
-\setmathsfont(Digits,Latin,Greek)
-  [Numbers={Lining,Proportional}]{Linux Libertine O}
-\usepackage{fontspec}
-\setmainfont{Linux Libertine O}
-\setmonofont[Scale=MatchLowercase]{Hack}
-\newfontfamily\devanagarifont{Annapurna SIL}
-\newfontfamily\displayfont{Linux Libertine Display O}
-
-% ============================================================= DRAFTING TOOLS =
-
-%\usepackage[driver=none,pass,showframe]{geometry}
-\overfullrule=20pt
-
-\usepackage{eso-pic}
-\usepackage{tikzpagenodes}
-
-\makeatletter
-\newcommand\drawbaselinegrid{%
-  \begin{tikzpicture}[overlay,remember picture,dotted]
-    \coordinate (size ref) at (\ifodd\c@page{  0}\else{-\bL}\fi,-\bL);
-    \coordinate (trim ref) at (                               0,   0);
-    \coordinate (safe ref) at (\ifodd\c@page{\sL}\else{ \iL}\fi, \iL);
-    %\draw[black]   (size ref) rectangle ++(\wL+\bL,\hL+2\bL);
-    %\draw[red]     (trim ref) rectangle ++(\wL,\hL);
-    %\draw[magenta] (safe ref) rectangle ++(\wL-\iL-\sL,\hL-2\iL);
-    \begin{scope}[even odd rule, gray]
-      \fill (trim ref) rectangle ++(\wL,\hL)
-            (size ref) rectangle ++(\wL+\bL,\hL+2\bL);
-    \end{scope}
-  \end{tikzpicture}}
-\makeatother
-
-\AddToShipoutPicture{\drawbaselinegrid}
-
-
-% =================================================================== LANGUAGE =
-
-\usepackage{polyglossia}
-\setmainlanguage{british}
-
-\hyphenation{mne-monic vi-ol-ently bog-gling ac-cur-acy kilo-thaum rap-idly}
-
-
-%\usepackage[%pdftex,
-%            pdfauthor={Your Name},
-%            pdftitle={The Title},
-%            pdfsubject={The Subject},
-%            pdfkeywords={Some Keywords},
-%            pdfproducer={Latex with hyperref, or other system},
-%            pdfcreator={pdflatex, or other tool}]{hyperref}
-
-
-%\usepackage{mhchem}
-%\usepackage{kmath,kerkis}
-
-
-
-
-
-
-
-\newcommand{\magic}[1]{{\ttfamily\bfseries#1}}
-
-\tikzset{pics/.cd,
-  sun symbol/.style={code={
-    \fill circle (#1/4);
-    \draw[line width=#1/8] circle (#1);
-  }},
-  black sun symbol/.style={code={
-    \draw[line width=#1*11/16] circle (#1*19/32);
-  }},
-  reality symbol/.style={code={\pic{sun symbol=0.5em};}},
-  between symbol/.style={code={\pic at (-0.5em*19/32,0) {sun symbol=0.5em};\pic at (0.5em*19/32,0) {black sun symbol=0.5em};}},
-  tannaka symbol/.style={code={\pic{black sun symbol=0.5em};}}
-}
-
-
-\def\chapterlist{%
-  |city|Thaumic city|,
-  |sufficiently|Sufficiently advanced technology|,
-  |ignorance|{From~ignorance, lead~me~to~truth}|,
-  |isnt|Magic isn’t|,
-  |know|What you don’t know|,
-  |ragdoll|Ragdoll physicist|,
-  |broken|Broken ʼverse|,
-  |thaumonuclear|Thaumonuclear|,
-  |jesus|The Jesus machine|,
-  |space|Space magic|,
-  |yantra|The~seventh impossible~thing|,
-  |daemons|Daemons|,
-  |abstract|Abstract weapon|,
-  |death|Death~surrounds this~machine|,
-  |zero|Zero day|,
-  |aum|{\devanagarifont ॐ}|,
-  |bare|Bare metal|,
-  |people|Hatt’s people|,
-  |deeper|Deeper magic|,
-  |cabal|There is no Cabal|,
-  |protagonism|Protagonism|,
-  |scrap|Scrap brain zone|,
-  |inferno|Inferno|,
-  |darkness|{From~darkness, lead~me~to~light}|,
-  |direct|Direct sunlight|,
-  |war|Abstract war|,
-  |real|Everything is real|,
-  |hate|Why do you hate Ra|,
-  |thursdayism|Last thursdayism|,
-  |akheron|Akheron|,
-  |all|All hell|,
-  |rajesh|{From~death, lead~me~to~immortality}|,
-  |machine|Machine space|,
-  |work|It has to work|,
-  |just|Why not just|,
-  |destructor|Destructor|
-}
-
-\def\makechapter|#1|#2|{\chapter{#2}\input{chapters/#1}}
-
-
-
-
-
-
+% ----------------------------------------------------------------- PAGE STYLE -
 
 \newcommand*\circled[1]{\tikz[baseline=(char.base)]{
     \node[shape=circle,draw,inner sep=1pt,fill=black,white](char){#1};}}
 
+\makepagestyle{main}
+\makeevenfoot {main}{}{\raThepage}{}
+\makeoddfoot  {main}{}{\raThepage}{}
 
-\makepagestyle  {reality}
-\makeevenfoot   {reality}{}{\thepage}{}
-\makeoddfoot    {reality}{}{\thepage}{}
+\aliaspagestyle {chapter}{main}
 
-\aliaspagestyle {between}{empty}
+\NewDocumentCommand\raThepage{}{ % between should not be necessary
+  \def\isReality{reality}\ifx\raWorld\isReality{\thepage}\fi%
+  \def\isTannaka{tannaka}\ifx\raWorld\isTannaka{\circled{\thepage}}\fi}
 
-\makepagestyle  {tannaka}
-\makeevenfoot   {tannaka}{}{\circled{\thepage}}{}
-\makeoddfoot    {tannaka}{}{\circled{\thepage}}{}
+\setlength{\parindent}{0.75em}
 
-
-\usepackage{xparse}
-
-\colorlet{reality}{black}
-\colorlet{between}{blue}
-\colorlet{tannaka}{red}
-
-
-\NewDocumentCommand\go{sm}{%
-  %\color{#2}%
-  \IfBooleanF{#1}{
-    \Needspace*{5\baselineskip}%
-    \nointerlineskip\bigskip%
-    \begingroup\centering%
-    \noindent\tikz{\pic{#2 symbol}}\par%
-    \endgroup%
-    \bigskip\nointerlineskip%
-  }%
-  \thispagestyle{#2}\pagestyle{#2}%
-  }
-
-
-
-% =================================================================== HEADINGS =
-
+% ------------------------------------------------------------ CHAPTER HEADING -
 
 \makechapterstyle{ra}{%
-\def\chapterheadstart{\vspace*{3\beforechapskip}}
-\def\printchaptername{}%{\chapnamefont \@chapapp}
-\def\chapternamenum{}%{\space}
-\def\printchapternum{}%{\chapnumfont \thechapter}
-\def\afterchapternum{}%{\par\nobreak\vskip \midchapskip}
-\def\printchapternonum{}
-\def\chaptitlefont{\Huge\displayfont}
-\def\printchaptertitle##1{\raggedleft\parbox{0.8\textwidth}
-  {\raggedleft\chaptitlefont ##1}}
-\def\afterchaptertitle{\par\nobreak\vskip 2\afterchapskip}
-}
+  \def\chapterheadstart{\vspace*{3\beforechapskip}}
+  \let\printchaptername\relax
+  \let\chapternamenum\relax
+  \let\printchapternum\relax
+  \let\afterchapternum\relax
+  \let\printchapternonum\relax
+  \def\chaptitlefont{\Huge\displayfont}
+  \def\printchaptertitle##1{\raggedleft\parbox{0.8\textwidth}
+    {\raggedleft\chaptitlefont ##1}}
+  \def\afterchaptertitle{\par\nobreak\vskip 2\afterchapskip}}
 
 \chapterstyle{ra}
 
-
-
-
-
-% ======================================================================== TOC =
-
+% ------------------------------------------------------------------------ TOC -
 
 %\setsecnumdepth{none}
 \maxsecnumdepth{none}
@@ -238,25 +92,128 @@
 \setlength{\cftbeforechapterskip}{0.5em \@plus\p@}
 \makeatother
 
+% ============================================================= DRAFTING TOOLS =
 
+\iftrue
 
-
-
-\setlength{\parindent}{0.75em}
-
+%\usepackage[driver=none,pass,showframe]{geometry}
+%\overfullrule=20pt
 \usepackage{lipsum}
 
+\usepackage{eso-pic}
+\usepackage{tikzpagenodes}
 
+\makeatletter
+\newcommand\drawguides{%
+  \begin{tikzpicture}[overlay,remember picture,dotted]
+    \coordinate (size ref) at (\ifodd\c@page{  0}\else{-\bL}\fi,-\bL);
+    \coordinate (trim ref) at (                               0,   0);
+    \coordinate (safe ref) at (\ifodd\c@page{\sL}\else{ \iL}\fi, \iL);
+    \draw[black]   (size ref) rectangle ++(\wL+\bL,\hL+2\bL);
+    \draw[red]     (trim ref) rectangle ++(\wL,\hL);
+    \draw[magenta] (safe ref) rectangle ++(\wL-\iL-\sL,\hL-2\iL);
+    \begin{scope}[even odd rule, gray]
+      \fill (trim ref) rectangle ++(\wL,\hL)
+            (size ref) rectangle ++(\wL+\bL,\hL+2\bL);
+    \end{scope}
+  \end{tikzpicture}}
+\makeatother
 
+\AddToShipoutPicture{\drawguides}
 
+\fi
 
+% =================================================================== LANGUAGE =
 
+\usepackage{polyglossia}
+\setmainlanguage{british}
+
+\hyphenation{mne-monic vi-ol-ently bog-gling ac-cur-acy kilo-thaum rap-idly
+  evid-ence tri-umphantly be-wildered fall-ingi haemo-globin}
+
+% =================================================================== CHAPTERS =
+
+\def\chapterlist{%
+%  |city|Thaumic city|,
+%  |sufficiently|Sufficiently advanced technology|,
+%  |ignorance|{From~ignorance, lead~me~to~truth}|,
+%  |isnt|Magic isn’t|,
+%  |know|What you don’t know|,
+%  |ragdoll|Ragdoll physicist|,
+%  |broken|Broken ʼverse|,
+%  |thaumonuclear|Thaumonuclear|,
+%  |jesus|The Jesus machine|,
+%  |space|Space magic|,
+  |yantra|The~seventh impossible~thing|,
+%  |daemons|Daemons|,
+%  |abstract|Abstract weapon|,
+%  |death|Death~surrounds this~machine|,
+%  |zero|Zero day|,
+%  |aum|{\devanagarifont ॐ}|,
+%  |bare|Bare metal|,
+%  |people|Hatt’s people|,
+%  |deeper|Deeper magic|,
+%  |cabal|There is no Cabal|,
+%  |protagonism|Protagonism|,
+%  |scrap|Scrap brain zone|,
+%  |inferno|Inferno|,
+%  |darkness|{From~darkness, lead~me~to~light}|,
+%  |direct|Direct sunlight|,
+%  |war|Abstract war|,
+%  |real|Everything is real|,
+%  |hate|Why do you hate Ra|,
+%  |thursdayism|Last thursdayism|,
+%  |akheron|Akheron|,
+%  |all|All hell|,
+%  |rajesh|{From~death, lead~me~to~immortality}|,
+%  |machine|Machine space|,
+%  |work|It has to work|,
+%  |just|Why not just|,
+  |destructor|Destructor|}
+
+\def\makechapter|#1|#2|{\chapter{#2}\input{chapters/#1}}
+
+% ===================================================================== CETERA =
+
+\usepackage{xparse}
+
+\let\raEmph\emph
+\let\raLatex\LaTeX
+\newcommand\raFix[1]{{\color{red}#1}}
+\newcommand\raMath[1]{{\color{orange}$#1$}}
+\newcommand\raMagic[1]{{\color{purple}\ttfamily\bfseries#1}}
+
+\tikzset{pics/.cd,
+  sun symbol/.style={code={
+    \fill circle (#1/4);
+    \draw[line width=#1/8] circle (#1);}},
+  black sun symbol/.style={code={
+    \draw[line width=#1*11/16] circle (#1*19/32);}},
+  reality symbol/.style={code={
+    \pic{sun symbol=1ex};}},
+  between symbol/.style={code={
+    \pic at (-1ex*19/32,0) {sun symbol=1ex};
+    \pic at (1ex*19/32,0) {black sun symbol=1ex};}},
+  tannaka symbol/.style={code={
+    \pic{black sun symbol=1ex};}}
+}
+
+\NewDocumentCommand\raGo{sm}{%
+  \IfBooleanF{#1}{
+    \Needspace*{5\baselineskip}%
+    \nointerlineskip\bigskip%
+    \begingroup\centering%
+    \noindent\tikz{\pic{#2 symbol}}\par%
+    \endgroup%
+    \bigskip\nointerlineskip%
+  }\gdef\raWorld{#2}}
+
+% ##############################################################################
+% ##############################################################################
 
 \usepackage[final]{microtype}
 
-
-
-\begin{document} % ################################################## THE BOOK #
+\begin{document} % ################################################ BOOK START #
   \frontmatter % ========================================== PRELIMINARY MATTER =
     \pagestyle{empty}
     \null % ------------------------------------------------------------- leaf -
@@ -289,6 +246,7 @@
     \cleartorecto % ------------------------------------------------- CONTENTS -
     \tableofcontents*
   \mainmatter % ==================================================== MAIN TEXT =
+    \pagestyle{main}
     \foreach \chap in \chapterlist {\expandafter\makechapter\chap}
   \backmatter % =================================================== END MATTER =
     \pagestyle{empty}
@@ -300,6 +258,6 @@
     \end{vplace}
     \cleartoverso % ----------------------------------------------------- leaf -
     \null
-\end{document} % ##################################################### THE END #
+\end{document} % #################################################### BOOK END #
 
 % ######################################################################## EOF #

@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+# ################################################################ LET'S DANCE #
 
 # Use best practices.
 use strict;
@@ -7,9 +8,9 @@ use warnings;
 # Enable autoflush.
 $|++;
 
-# ================================================================ FILE FETCHING
+# ============================================================== FILE FETCHING =
 
-# Needed modules:
+# Use needed modules.
 use File::Slurp;
 use LWP::Simple;
 use Encode;
@@ -21,52 +22,53 @@ my $url_root = 'http://qntm.org/';
 # Create local storage directory.
 mkdir $dir_root;
 
-# File fetching subroutine.
+# Define file fetching subroutine.
 sub Fetch {
   my $filename = $_[0];
   print "\nFilename: ".$filename."\n";
-
   my $local_filename = $dir_root.$filename;
   my $remote_filename = $url_root.$filename;
-
-  my $file;
+  my $in_file;
   if (!-f $local_filename) {
     print "  Fetching remote file...";
-    $file = get $remote_filename;
-    die " Download error!\n" unless defined $file;
-    $file = encode('utf-8', $file);
-    my $foo;
-    die " Writing error!\n" unless open($foo, '>', $local_filename);
-    print $foo $file;
-    close $foo;
+    $in_file = get $remote_filename;
+    die " Download error!\n" unless defined $in_file;
+    $in_file = encode('utf-8', $in_file);
+    my $out_file;
+    die " Writing error!\n" unless open($out_file, '>', $local_filename);
+    print $out_file $in_file;
+    close $out_file;
   } else {
     print "  Fetching local copy...";
   }
-
-  $file = read_file $local_filename;
-
+  $in_file = read_file $local_filename;
   print " Done!\n";
-  return $file;
+  return $in_file;
 }
 
-# ============================================================= PROCESS CHAPTERS
+# ====================================================== CHAPTERS EDITS HASHES =
 
-my %edits = (
+my %edits = ( # '√3' 'EMμ'
   "city"          => { "'Scuse" => "’Scuse"
                         },
   "sufficiently"  => { '<tt></tt>zui ixuv ixuv' => '<tt>zui ixuv ixuv</tt>',
                        '<tt></tt>dulaku' => '<tt>dulaku</tt>',
                        "my tutors' knowledge" => "my tutors’ knowledge",
                        "two weeks' preparation" => "two weeks’ preparation" },
-  "ignorance"     => { "- crucially -" => "-- crucially --" },
+  "ignorance"     => { "- crucially -" => "-- crucially --",
+                       '<tt></tt>uum' => '<tt>uum</tt>',
+                       '<tt></tt>eset' => '<tt>eset</tt>',
+                       '<tt></tt>kafanu' => '<tt>kafanu</tt>' },
   "isnt"          => { "Atlantis' fuel system" => "Atlantis’ fuel system",
                        "Atlantis' last engine" => "Atlantis’ last engine",
                        "40 miles' range" => "40 miles’ range",
                        "the Fernos' spot" => "the Fernos’ spot",
                        'O<sub>2</sub>' => 'O₂' },
-  "know"          => { '<tt></tt>uum' => '<tt>uum</tt>',
+  "know"          => { # ltf15
+                       '<tt></tt>uum' => '<tt>uum</tt>',
                        "four weeks' rent" => "four weeks’ rent",
-                       '+ <var>S</var><sub><var>t</var>;<var>&tau;</var></sub>' => '$+S_{t\,;\tau\,;}$' },
+                       '+ <var>S</var><sub><var>t</var>;<var>&tau;</var></sub>'
+                         => '$+S_{t\,;\tau\,;}$' },
   "ragdoll"       => { "Tómas' response" => "Tómas’ response" },
   "broken"        => { "Atlantis' nose cone" => "Atlantis’ nose cone" },
   "thaumonuclear" => { 'SO<sub>2</sub>' => 'SO₂' },
@@ -75,7 +77,7 @@ my %edits = (
                        'O<sub>2</sub>' => 'O₂' },
   "yantra"        => {},
   "daemons"       => { "St. Nicholas' Hill" => "St.~Nicholas’ Hill",
-                       'L<sup>A</sup>T<sub>E</sub>X' => '\LaTeX' },
+                       'L<sup>A</sup>T<sub>E</sub>X' => '\raLatex' },
   "abstract"      => { "א" => "{א}" },
   "death"         => {},
   "zero"          => {},
@@ -110,33 +112,28 @@ my %edits = (
   "destructor"    => {}
 );
 
-#  '√3'
-#  'EMμ'
+# ======================================================== CHAPTERS PROCESSING =
 
-
-# Now we process each chapter.
 while (my ($id, $edit) = each %edits) {
 
-  # ----------------------------------------------------------------- FETCH HTML
+  # ------------------------------------------------------------ PRELIMINARIES -
 
   my $t = Fetch $id;
-
   printf "  Processing...";
 
   # Remove vertical whitespace for easier handling.
   $t =~ s/\v+/ /g;
   
-  # ------------------------------------------------------------ EXTRACT CONTENT
+  # ---------------------------------------------------------- EXTRACT CONTENT -
 
   # Starting marker. 1st chapter has no "Prev." It's handled by the 2nd option:
   my $bef = 'Previously<\/a><\/h4>|id="content">';
   # Ending marker. Every chapter ends with '<p>&nbsp', some with styling:
   my $aft = '<p[^>]*>\&nbsp;';
-  # Extract everything between markers.
   # Note central group must be lazy: (e.g. see chapter "just")
   $t =~ s/.*(?:$bef)(.*?)(?:$aft).*/$1/;
 
-  # ------------------------------------------------------------------ TIDY HTML
+  # ---------------------------------------------------------------- TIDY HTML -
 
   # Strip comments.
   $t =~ s/<!--.*?-->//g;
@@ -155,70 +152,65 @@ while (my ($id, $edit) = each %edits) {
     $t =~ s/<div.*div>/$patch/;
   }
 
+  # Chapter "protagonism" has uppercase paragraph tags.
   if ($id eq 'protagonism') {
     $t =~ s/<P>/<p>/g;
   }
 
-  # Fix typos.
+  # ------------------------------------------------------------------ EDITING -
+
+  # Apply edits.
   while (my ($original, $fixed) = each $edit) {
-    $t =~ s/\Q$original/{\\color{green}$fixed}/g;
+    $t =~ s/\Q$original/\\raFix{$fixed}/g;
   }
-
-  # ----------------------------------------------------------------- CHECKPOINT
-
-  # We now have minimized and clean html. It would be really easy to produce
-  # a cleaner html version of the documents now, e.g. grouping <p>s into <div>s
-  # for aligment purposes, styling them with classes, etc.
-  # But that's not what we want.
 
   # I'll just leave this here for sanity checks:
 #  $t =~ s/(<\/(?:p|h4)>)/$1\n\n/g;
 
-  # Note: css styling is not really uniform since some semicolons are missing.
-
-  # ----------------------------------------------------------- CONVERT TO LATEX
+  # --------------------------------------------------------- CONVERT TO LATEX -
 
   # Format emphasis. Two passes to handle nesting.
-  $t =~ s/<(i|em)>(.*?)<\/\1>/{\\color{cyan}\\emph{$2}}/g;
-  $t =~ s/<(i|em)>(.*?)<\/\1>/{\\color{blue}\\emph{$2}}/g;
+  $t =~ s/<(i|em)>(.*?)<\/\1>/\\raEmph{$2}/g;
+  $t =~ s/<(i|em)>(.*?)<\/\1>/\\raEmph{$2}/g;
 
   # Format magic.
-  $t =~ s/<(tt|code)>(.*?)<\/\1>/{\\color{purple}\\magic{$2}}/g;
+  $t =~ s/<(tt|code)>(.*?)<\/\1>/\\raMagic{$2}/g;
 
   # Format the stars.
 #  $t =~ s/>\*</>\\gostar</g;
   # Actually, don't. I am just going to suppress them anyways.
 
   # Format math.
-  $t =~ s/<var>(.*?)<\/var>/{\\color{orange}\$$1\$}/g;
+  $t =~ s/<var>(.*?)<\/var>/\\raMath{$1}/g;
 
   # Aligning every paragraph would not be smart. Changing alignment at
   # transitions between worlds is, so we need to detect them.
   # Doing this with ease using just regex would need alignment data to be
   # both at the opening and at the closing html tags. That's easily done:
-  $t =~ s/<(p|h4)[^>]*right[^>]*>(.*?)<\/\1>/r-{$2}-r/g;
-  $t =~ s/<(p|h4)[^>]*center[^>]*>(.*?)<\/\1>/c-{$2}-c/g;
-  $t =~ s/<(p|h4)>(.*?)<\/\1>/l-{$2}-l/g;
+  $t =~ s/<(p|h4)[^>]*right[^>]*>(.*?)<\/\1>/r-<$2>-r/g;
+  $t =~ s/<(p|h4)[^>]*center[^>]*>(.*?)<\/\1>/c-<$2>-c/g;
+  $t =~ s/<(p|h4)>(.*?)<\/\1>/l-<$2>-l/g;
+  # We use angle brackets since no other html tags are left.
 
   # Suppress the stars.
-  $t =~ s/.-{\*}-.//g;
+  $t =~ s/.-<\*>-.//g;
 
   # Ok, nice. Now we have a single line nicely formatted as
-  #   a-{...}-ab-{...}-bc-{...  ...  ...}-yz-{...}-z
+  #   a-<...>-ab-<...>-bc-<...  ...  ...>-yz-<...>-z
   # where letters denote alignment data.
 
   # Now we set the initial world
-  $t =~ s/^l-{/\\go*{reality}\n\n/;
-  $t =~ s/^c-{/\\go*{between}\n\n/;
-  $t =~ s/^r-{/\\go*{tannaka}\n\n/;
+  $t =~ s/^l-</\\raGo*{reality}\n\n/;
+  $t =~ s/^c-</\\raGo*{between}\n\n/;
+  $t =~ s/^r-</\\raGo*{tannaka}\n\n/;
   # and format transitions with user defined commands
-  $t =~ s/}-[^l]l-{/\n\n\\go{reality}\n\n/g;
-  $t =~ s/}-[^c]c-{/\n\n\\go{between}\n\n/g;
-  $t =~ s/}-[^r]r-{/\n\n\\go{tannaka}\n\n/g;
+  $t =~ s/>-[^l]l-</\n\n\\raGo{reality}\n\n/g;
+  $t =~ s/>-[^c]c-</\n\n\\raGo{between}\n\n/g;
+  $t =~ s/>-[^r]r-</\n\n\\raGo{tannaka}\n\n/g;
   # while ignoring redundant
-  $t =~ s/}-(l|c|r)\1-{/\n\n/g;
+  $t =~ s/>-(l|c|r)\1-</\n\n/g;
   # and trailing information
-  $t =~ s/}-(l|c|r)$/\n/;
+  $t =~ s/>-(l|c|r)$/\n/;
 
   # Format ellipsis.
   $t =~ s/\.\.\./…/g;
@@ -229,7 +221,7 @@ while (my ($id, $edit) = each %edits) {
   $t =~ s/&amp;/\\&/g;
 
   # Format apostrophes. (Handles emphasis on the left.)
-  $t =~ s/\b[}]?'\b/’/g;
+  $t =~ s/\b(?<=})?'\b/’/g;
 
   # Catch closed single quotes.
   $t =~ s/'(.*?)'/<$1>/gm;
@@ -237,7 +229,7 @@ while (my ($id, $edit) = each %edits) {
   $t =~ s/"(.*?)"/<$1>/gm;
   # Catch unclosed double quotes.
   $t =~ s/"(.*)$/<$1>/gm;
-
+  # We use angle brackets since no other html tags are left.
   # Format first and second level quotes, british style.
   $t =~ s/<([^<>]*)>/‘$1’/g;
   $t =~ s/<([^<>]*)>/“$1”/g;
@@ -256,4 +248,4 @@ while (my ($id, $edit) = each %edits) {
 
 print "\nComplete success!\n\n";
 
-# ========================================================================== EOF
+# ######################################################################## EOF #
