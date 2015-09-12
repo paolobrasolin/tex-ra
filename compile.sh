@@ -1,3 +1,3 @@
 mkdir tmp
-pdflatex --output-dir=tmp $1.tex
-mv tmp/$1.pdf ./
+$1 --output-dir=tmp $2.tex
+mv tmp/$2.pdf ./

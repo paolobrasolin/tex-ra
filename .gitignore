@@ -1,10 +1,11 @@
 *
 
 !.gitignore
-!fetch.pl
-!main.tex
-!cover.tex
+!aleph.tex
 !compile.sh
+!cover.tex
+!fetch.pl
 !glyph.eps
 !glyph-white.eps
+!main.tex
 !README.md

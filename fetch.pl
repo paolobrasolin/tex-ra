@@ -63,23 +63,23 @@ my %edits = (
                        "Atlantis' last engine" => "Atlantis’ last engine",
                        "40 miles' range" => "40 miles’ range",
                        "the Fernos' spot" => "the Fernos’ spot",
-                       'O<sub>2</sub>' => 'O\textsubscript{2}' }, # ₂
+                       'O<sub>2</sub>' => 'O\raSub{2}' }, # ₂
   "know"          => { # ltf15
                        '<tt></tt>uum' => '<tt>uum</tt>',
                        "four weeks' rent" => "four weeks’ rent",
                        '+ <var>S</var><sub><var>t</var>;<var>&tau;</var></sub>'
-                         => '\raMath{+S_{t;\tau;}}' },
+                         => '\textit{+S\textsubscript{t;$\tau\kern-1.0512pt$;}}' },
   "ragdoll"       => { "Tómas' response" => "Tómas’ response" },
   "broken"        => { "Atlantis' nose cone" => "Atlantis’ nose cone", 
-                       '√3' => '\raMath{\sqrt{3}}'  },
-  "thaumonuclear" => { 'SO<sub>2</sub>' => 'SO\textsubscript{2}' }, # ₂
+                       '√3' => '3\raSup{½}'  },
+  "thaumonuclear" => { 'SO<sub>2</sub>' => 'SO\raSub{2}' }, # ₂
   "jesus"         => {},
   "space"         => { "five years' time" => "five years’ time",
-                       'O<sub>2</sub>' => 'O\textsubscript{2}' }, # ₂
+                       'O<sub>2</sub>' => 'O\raSub{2}' }, # ₂
   "yantra"        => {},
   "daemons"       => { "St. Nicholas' Hill" => "St.~Nicholas’ Hill",
                        'L<sup>A</sup>T<sub>E</sub>X' => '\LaTeX' },
-  "abstract"      => { 'א**' => '\raMath{\aleph**}' },
+  "abstract"      => { 'א**' => '\raAleph\kern-.15ex*\kern-.15ex*\kern-.3ex' },
   "death"         => {},
   "zero"          => {},
   "aum"           => {},
@@ -88,20 +88,20 @@ my %edits = (
   "deeper"        => { "mages' toolboxes" => "mages’ toolboxes",
                        "'88" => "’88",
                        "'89" => "’89",
-                       'ζ' => '\raMath{\zeta}',
-                       'ι' => '\raMath{\iota}',
-                       'EMμ' => 'EM\raMath{\mu}',
-                       'χ' => '\raMath{\chi}' },
+                       'ζ' => '$\zeta\kern-1.23999pt$', # among italic, unkern
+                       'ι' => '$\iota$', # has no kerning
+                       'EMμ' => '\textit{EM$\mu$}',
+                       'χ' => '$\chi$' }, # loner among roman, don't unkern
   "cabal"         => { "'72" => "’72" },
   "protagonism"   => { '..........' => 'HOLY CRAP DOTS' },
-  "scrap"         => { '10<sup>18</sup>' => '10\textsuperscript{18}' }, # ¹⁸
+  "scrap"         => { '10<sup>18</sup>' => '10\raSup{18}' }, # ¹⁸
   "inferno"       => {},
   "darkness"      => {},
   "direct"        => { "Henders' simple answer" => "Henders’ simple answer",
-                       '10<sup>18</sup>' => '10\textsuperscript{18}' }, # ¹⁸
+                       '10<sup>18</sup>' => '10\raSup{18}' }, # ¹⁸
   "war"           => {},
   "real"          => { "full Moons' worth" => "full Moons’ worth",
-                       'XE<sub>171</sub>' => 'XE\textsubscript{171}' }, # ₁₇₁
+                       'XE<sub>171</sub>' => 'XE\raSub{171}' }, # ₁₇₁
   "hate"          => { "Actuals' next step" => "Actuals’ next step" },
   "thursdayism"   => {},
   "akheron"       => {},
@@ -110,7 +110,7 @@ my %edits = (
                        "'72" => "’72",
                        "'73" => "’73" },
   "machine"       => { "astronauts' lives" => "astronauts’ lives",
-                       'א**' => '\raMath{\aleph**}' },
+                       'א**' => '\raAleph\kern-.15ex*\kern-.15ex*\kern-.3ex' },
   "work"          => {},
   "just"          => { "'ports" => "’ports",
                        "the blinds' edges" => "the blinds’ edges" },

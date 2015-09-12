@@ -7,17 +7,26 @@
 % ================================================ FONTS & ENCODING & LANGUAGE =
 
 \usepackage[rm]{libertine}
-\usepackage[T1]{fontenc} 
+\usepackage[LY1]{fontenc} % Better ligatures than T1
+\usepackage[libertine]{newtxmath}
 \usepackage[utf8]{inputenc}
 
 \usepackage{newunicodechar}
 \newunicodechar{ā}{\=a}
 \newunicodechar{ī}{\=\i}
-%\newunicodechar{/}{\slash}
+
+\newcommand\raSup[1]{\raisebox{0.85ex}{\scalebox{.54}{\libertineSB\textls[78]{#1}}}}                                   
+\newcommand\raSub[1]{\raisebox{-.26ex}{\scalebox{.54}{\libertineSB\textls[78]{#1}}}}
+
 
 \def\DevnagVersion{2.15}
 \usepackage{devanagari}
-\newunicodechar{ॐ}{{\dn :}}
+
+
+\def\raAum{{\dn :}}
+\def\raAleph{\raisebox{-0.09898pt}{\includegraphics{aleph}}}
+
+
 
 \usepackage[british]{babel}
 \hyphenation{boo-o-o-o-o-o-o-o-o-o-oop ka-dhu-nda}
@@ -60,11 +69,11 @@
 %\sloppy
 %\hbadness=10000
 
-\emergencystretch=0.3em
+\emergencystretch=0.4em
 
 % Suppress the survivors
-\vbadness=6500 % Three left (2 good, 1 bad)
-\hfuzz=2.32pt  % Four left (2 tiny, 2 small)
+\vbadness=7000
+\hfuzz=3pt
 
 % ----------------------------------------------------------------- PAGE STYLE -
 
@@ -93,9 +102,11 @@
   \let\afterchapternum\relax
   \let\printchapternonum\relax
   \def\chaptitlefont{\Huge\libertineDisplay}
-  \def\printchaptertitle##1{\raggedleft\parbox{0.8\textwidth}
-    {\raggedleft\chaptitlefont ##1}}
-  \def\afterchaptertitle{\par\nobreak\vskip 2\afterchapskip}}
+  \def\printchaptertitle##1{%
+    \begin{adjustwidth}{0.2\textwidth}{0in}%
+      \raggedleft\chaptitlefont ##1\par%
+    \end{adjustwidth}}
+  \def\afterchaptertitle{\vskip 2\afterchapskip}}
 
 \chapterstyle{ra}
 
@@ -121,7 +132,7 @@
 
 \iftrue
 
-\renewcommand\raFix[1]{{\color{red}#1}}
+\renewcommand\raFix[1]{#1}
 
 %\usepackage[driver=none,pass,showframe]{geometry}
 \usepackage{lipsum}
@@ -167,7 +178,7 @@
   |abstract|Abstract weapon|,
   |death|Death~surrounds this~machine|,
   |zero|Zero day|,
-  |aum|ॐ|, 
+  |aum|\raAum|, 
   |bare|Bare metal|,
   |people|Hatt’s people|,
   |deeper|Deeper magic|,
@@ -187,17 +198,19 @@
   |machine|Machine space|,
   |work|It has to work|,
   |just|Why not just|,
-  |destructor|Destructor|}
+  |destructor|Destructor|
+}
 
 % The fill here is saturating underfull vboxes on chapter heading pages.
-\def\makechapter|#1|#2|{\chapter{#2}\vfill\input{chapters/#1}}
+\def\makechapter|#1|#2|{\chapter{#2}\vfill\input{chapters/#1}
+}
 
 % ===================================================================== CETERA =
 
 
 \let\raEmph\emph
-\def\raMagic#1{{\color{purple}\textbf{#1}}}
-\def\raMath#1{{\color{green}$#1$}}
+\def\raMagic#1{{\textbf{#1}}}
+\def\raMath#1{\textit{#1}}
 
 \tikzset{pics/.cd,
   sun symbol/.style={code={
@@ -257,23 +270,24 @@
       \vfill\vfill\vfill
       {{\ttfamily ra} © Sam Hughes 2011--14}\par
       {Cover images courtesy of {\scshape nasa}}\par
-      {Editing and typesetting by Paolo al-Imk\=an\=\i\ Brasolin}\par
+      {Edited and typeset by Paolo al-Imk\=an\=\i\ Brasolin}\par
     \endgroup
     \cleartorecto % ------------------------------------------------- CONTENTS -
-    \tableofcontents*
+    %\tableofcontents*
   \mainmatter % ==================================================== MAIN TEXT =
     \pagestyle{main}
     \foreach \chap in \chapterlist {\expandafter\makechapter\chap}
   \backmatter % =================================================== END MATTER =
     \pagestyle{empty}
     \cleartorecto\cleartoverso % ------------------------------------ COLOPHON -
-    \begin{vplace}[0.5]
+    \vspace*{\fill}
+    \begin{adjustwidth}{0.25\textwidth}{0.25\textwidth}
       \centering
-   Philipp Poll
-Produttore	Libertine Open Fonts Project   There is a single copy of this book.
-      This book has been designed 
-      Printed in \ldots
-    \end{vplace}
+Printed in September 2015 by Blurb.
+This book is set using typefaces from the Linux Libertine family
+designed by Philipp Poll and the devan\=agar\=\i\ font by Frans Velthuis.
+    \end{adjustwidth}
+    \vfill
     \cleartoverso % ----------------------------------------------------- leaf -
     \null
 \end{document} % #################################################### BOOK END #
