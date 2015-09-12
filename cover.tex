@@ -1,7 +1,5 @@
 \documentclass{minimal}
 
-%\RequireXeTeX
-
 \def\cs#1{\csname#1\endcsname}
 
 \usepackage{calc}
@@ -10,10 +8,10 @@
  \expandafter\newlength\csname#1\endcsname
  \expandafter\setlength\csname#1\endcsname{#2}}
 
-\defLength{hL}{8in}      % cover height
-\defLength{wL}{5in}      % cover width
-\defLength{gL}{0.8333in} % gutter width
-\defLength{bL}{0.125in}  % bleed
+\defLength{hL}{8in}     % cover height
+\defLength{wL}{5in}     % cover width
+\defLength{gL}{0.861in} % gutter width - 420 pages
+\defLength{bL}{0.125in} % bleed
 \defLength{swL}{\bL+\wL+\gL+\wL+\bL} % spread width
 \defLength{shL}{\bL+\hL+\bL} % spread height
 \defLength{iL}{0.25in}   % inset
@@ -21,14 +19,15 @@
 \usepackage[papersize={\swL,\shL}]{geometry}
 
 \usepackage{fontspec}
-\setmainfont{Linux Libertine O}
-\setmonofont{Linux Libertine Mono O}
-%\setmainfont{LinLibertine_R}%
-%  [ Extension = .otf
-%  , FontFace = {m} {it}{*I}
-%  , FontFace = {b} {n} {*B}
-%  , FontFace = {bx}{n} {*Z}
-%  ]
+
+\setmainfont
+  [ Extension = .otf
+  , UprightFont = {*R}
+  , ItalicFont  = {*RI} %, ItalicFeatures = { Color = blue }
+  , BoldFont    = {*RB} %, BoldFeatures   = { Color = purple }
+  ]{LinLibertine_}
+
+\newfontface\displayfont{LinLibertine_DR.otf}
 
 \usepackage{xcolor}
 \pagecolor{black}
@@ -50,7 +49,7 @@
 }
 
 \tikzset{
-  cage/.style 2 args={ %draw, ultra thin, darkgray
+  cage/.style 2 args={ draw, ultra thin, darkgray
                      , minimum width  = \cs{#1}
                      , minimum height = \cs{#2} },
   extended line/.style={shorten >=-#1,shorten <=-#1},
@@ -61,11 +60,12 @@
 \defCageSizes{cover}{\wL}{\hL}{\iL}
 \defCageSizes{gutter}{\gL}{\hL}{\iL}
 
-%\usepackage[final]{microtype}
+\usepackage[final]{microtype}
+\UseMicrotypeSet{all}
 
 \begin{document}%
   \begin{tikzpicture}[overlay,remember picture]
-    \node at (current page.center){\includegraphics[width=\swL,height=\shL]{cover.jpg}};
+%    \node at (current page.center){\includegraphics[width=\swL,height=\shL]{cover.jpg}};
     \cage{spread}[][] (spread) at (current page.center);
     \begin{scope}[even odd rule, black!90!white]
       \fill (spread outer cage.north west) rectangle (spread outer cage.south east)
@@ -84,37 +84,42 @@
     \def\eclipticangle{\pgfmathresult}
     \pgfmathsetmacro\galaxyangle{\eclipticangle-60}
 %    \draw (cross point) +(\galaxyangle:\swL) -- +(\galaxyangle+180:\swL);
-    \node[ circle, inner sep=0in, minimum size=4in] (sun) at (sun point) {};
-    \node[ circle, inner sep=0in, minimum size=4in/109.2] (earth) at (earth point) {};
-    \node[ white
+    \node[ fill, orange, circle, inner sep=0in, minimum size=4in] (sun) at (sun point) {};
+    \node[ fill, cyan, circle, inner sep=0in, minimum size=4in/109.2] (earth) at (earth point) {};
+    \node[ white, font=\displayfont
          ]
          (author)
          at ($(front cover inner cage.north)!0.5!(sun.north)$)
          {Sam Hughes};
     \node[ white
-         , font=\fontsize{100}{0}\ttfamily
+         , font=\fontsize{100}{0}\bfseries
          ]
          (title)
          at ($(front cover inner cage.south)!0.5!(sun.south)$)
          {ra};
-    \node[ text width=0.5\wL
+    \node[ text width=0.44\wL
+         , font=\fontsize{11}{13.2}\selectfont
          , align=justify
          , white
          ]
          (teaser)
          at (back cover inner cage)
-         {\input{teaser}};
+         {%
+Magic is real.\par\bigskip
+Discovered in the 1970s, magic is now a \emph{bona fide} field of engineering. There's magic in heavy industry and magic in your home. It's what's next after electricity.\par\smallskip
+Student mage Laura Ferno has designs on the future: her mother died trying to reach space using magic, and Laura wants to succeed where she failed. But first, she has to work out what went wrong. And who her mother really was.\par\medskip
+And whether, indeed, she's dead at all...\par
+};
     \node[ white
          , rotate=-90
          , anchor=west
-         , font=\fontsize{16}{0}\selectfont
+         , font=\fontsize{16}{0}\displayfont
          ] at (gutter inner cage.north) {Sam Hughes};
     \node[ white
          , rotate=-90
-         , font=\fontsize{50}{0}\ttfamily
+         , font=\fontsize{50}{0}\bfseries
          ] at ($(gutter inner cage.north)!0.4!(gutter inner cage.south)$) {ra};
     \node[anchor=south] at (gutter inner cage.south) {\includegraphics[width=0.7\gL]{glyph-white}};
-%    \node[anchor=south,opacity=.2] at (teaser.north) {\includegraphics[width=0.3\wL]{wadjet-white}};
   \end{tikzpicture}%
 \end{document}
 

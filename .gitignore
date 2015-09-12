@@ -4,9 +4,7 @@
 !fetch.pl
 !main.tex
 !cover.tex
-!make-main.sh
-!make-cover.sh
+!compile.sh
 !glyph.eps
 !glyph-white.eps
-!wadjet.eps
 !README.md

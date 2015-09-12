@@ -1,17 +1,27 @@
 % ################################################################ LET'S DANCE #
-
 \documentclass[10pt]{memoir}
 
-% ====================================================================== FONTS =
+\usepackage{xcolor}
+\usepackage{xparse}
 
-%\usepackage{mathspec}
-%\setmathsfont(Digits,Latin,Greek)
-%  [Numbers={Lining,Proportional}]{Linux Libertine O}
-\usepackage{fontspec}
-\setmainfont{Linux Libertine O}
-\setmonofont[Scale=MatchLowercase]{Hack}
-\newfontfamily\devanagarifont{Annapurna SIL}
-\newfontfamily\displayfont{Linux Libertine Display O}
+% ================================================ FONTS & ENCODING & LANGUAGE =
+
+\usepackage[rm]{libertine}
+\usepackage[T1]{fontenc} 
+\usepackage[utf8]{inputenc}
+
+\usepackage{newunicodechar}
+\newunicodechar{ā}{\=a}
+\newunicodechar{ī}{\=\i}
+%\newunicodechar{/}{\slash}
+
+\def\DevnagVersion{2.15}
+\usepackage{devanagari}
+\newunicodechar{ॐ}{{\dn :}}
+
+\usepackage[british]{babel}
+\hyphenation{boo-o-o-o-o-o-o-o-o-o-oop ka-dhu-nda}
+\def\raSlash{\slash\hspace{0pt}}
 
 % ===================================================================== LAYOUT =
 
@@ -43,10 +53,23 @@
 \checkandfixthelayout
 \trimXmarks
 
+% ---------------------------------------------------------------------- BOXES -
+
+%\overfullrule=50pt
+%\tolerance=300
+%\sloppy
+%\hbadness=10000
+
+\emergencystretch=0.3em
+
+% Suppress the survivors
+\vbadness=6500 % Three left (2 good, 1 bad)
+\hfuzz=2.32pt  % Four left (2 tiny, 2 small)
+
 % ----------------------------------------------------------------- PAGE STYLE -
 
 \newcommand*\circled[1]{\tikz[baseline=(char.base)]{
-    \node[shape=circle,draw,inner sep=1pt,fill=black,white](char){#1};}}
+    \node[shape=circle,inner sep=1pt,white,fill=black](char){#1};}}
 
 \makepagestyle{main}
 \makeevenfoot {main}{}{\raThepage}{}
@@ -69,7 +92,7 @@
   \let\printchapternum\relax
   \let\afterchapternum\relax
   \let\printchapternonum\relax
-  \def\chaptitlefont{\Huge\displayfont}
+  \def\chaptitlefont{\Huge\libertineDisplay}
   \def\printchaptertitle##1{\raggedleft\parbox{0.8\textwidth}
     {\raggedleft\chaptitlefont ##1}}
   \def\afterchaptertitle{\par\nobreak\vskip 2\afterchapskip}}
@@ -94,10 +117,13 @@
 
 % ============================================================= DRAFTING TOOLS =
 
+\newcommand\raFix[1]{#1}
+
 \iftrue
 
+\renewcommand\raFix[1]{{\color{red}#1}}
+
 %\usepackage[driver=none,pass,showframe]{geometry}
-%\overfullrule=20pt
 \usepackage{lipsum}
 
 \usepackage{eso-pic}
@@ -123,65 +149,55 @@
 
 \fi
 
-% =================================================================== LANGUAGE =
-
-\usepackage{polyglossia}
-\setmainlanguage{british}
-
-\hyphenation{mne-monic vi-ol-ently bog-gling ac-cur-acy kilo-thaum rap-idly
-  evid-ence tri-umphantly be-wildered fall-ingi haemo-globin}
-
 % =================================================================== CHAPTERS =
 
 \def\chapterlist{%
-%  |city|Thaumic city|,
-%  |sufficiently|Sufficiently advanced technology|,
-%  |ignorance|{From~ignorance, lead~me~to~truth}|,
-%  |isnt|Magic isn’t|,
-%  |know|What you don’t know|,
-%  |ragdoll|Ragdoll physicist|,
-%  |broken|Broken ʼverse|,
-%  |thaumonuclear|Thaumonuclear|,
-%  |jesus|The Jesus machine|,
-%  |space|Space magic|,
+  |city|Thaumic city|,
+  |sufficiently|Sufficiently advanced technology|,
+  |ignorance|{From~ignorance, lead~me~to~truth}|,
+  |isnt|Magic isn’t|,
+  |know|What you don’t know|,
+  |ragdoll|Ragdoll physicist|,
+  |broken|Broken ’verse|,
+  |thaumonuclear|Thaumonuclear|,
+  |jesus|The Jesus machine|,
+  |space|Space magic|,
   |yantra|The~seventh impossible~thing|,
-%  |daemons|Daemons|,
-%  |abstract|Abstract weapon|,
-%  |death|Death~surrounds this~machine|,
-%  |zero|Zero day|,
-%  |aum|{\devanagarifont ॐ}|,
-%  |bare|Bare metal|,
-%  |people|Hatt’s people|,
-%  |deeper|Deeper magic|,
-%  |cabal|There is no Cabal|,
-%  |protagonism|Protagonism|,
-%  |scrap|Scrap brain zone|,
-%  |inferno|Inferno|,
-%  |darkness|{From~darkness, lead~me~to~light}|,
-%  |direct|Direct sunlight|,
-%  |war|Abstract war|,
-%  |real|Everything is real|,
-%  |hate|Why do you hate Ra|,
-%  |thursdayism|Last thursdayism|,
-%  |akheron|Akheron|,
-%  |all|All hell|,
-%  |rajesh|{From~death, lead~me~to~immortality}|,
-%  |machine|Machine space|,
-%  |work|It has to work|,
-%  |just|Why not just|,
+  |daemons|Daemons|,
+  |abstract|Abstract weapon|,
+  |death|Death~surrounds this~machine|,
+  |zero|Zero day|,
+  |aum|ॐ|, 
+  |bare|Bare metal|,
+  |people|Hatt’s people|,
+  |deeper|Deeper magic|,
+  |cabal|There is no Cabal|,
+  |protagonism|Protagonism|,
+  |scrap|Scrap brain zone|,
+  |inferno|Inferno|,
+  |darkness|{From~darkness, lead~me~to~light}|,
+  |direct|Direct sunlight|,
+  |war|Abstract war|,
+  |real|Everything is real|,
+  |hate|Why do you hate Ra|,
+  |thursdayism|Last thursdayism|,
+  |akheron|Akheron|,
+  |all|All hell|,
+  |rajesh|{From~death, lead~me~to~immortality}|,
+  |machine|Machine space|,
+  |work|It has to work|,
+  |just|Why not just|,
   |destructor|Destructor|}
 
-\def\makechapter|#1|#2|{\chapter{#2}\input{chapters/#1}}
+% The fill here is saturating underfull vboxes on chapter heading pages.
+\def\makechapter|#1|#2|{\chapter{#2}\vfill\input{chapters/#1}}
 
 % ===================================================================== CETERA =
 
-\usepackage{xparse}
 
 \let\raEmph\emph
-\let\raLatex\LaTeX
-\newcommand\raFix[1]{{\color{red}#1}}
-\newcommand\raMath[1]{{\color{orange}$#1$}}
-\newcommand\raMagic[1]{{\color{purple}\ttfamily\bfseries#1}}
+\def\raMagic#1{{\color{purple}\textbf{#1}}}
+\def\raMath#1{{\color{green}$#1$}}
 
 \tikzset{pics/.cd,
   sun symbol/.style={code={
@@ -211,7 +227,7 @@
 % ##############################################################################
 % ##############################################################################
 
-\usepackage[final]{microtype}
+\usepackage[final, babel]{microtype}
 
 \begin{document} % ################################################ BOOK START #
   \frontmatter % ========================================== PRELIMINARY MATTER =
@@ -224,9 +240,9 @@
     \cleartorecto % ----------------------------------------------- TITLE PAGE -
     \begingroup\centering
       \null\bigskip
-      {\huge Sam Hughes}\par
+      {\huge\libertineDisplay Sam Hughes}\par
       \bigskip
-      {\fontsize{50pt}{0}\displayfont ra}\par
+      {\fontsize{50pt}{0}\raMagic{ra}}\par
       \vfill
       \tikz{\pic{sun symbol=1in}}\par
       \vfill
@@ -253,6 +269,8 @@
     \cleartorecto\cleartoverso % ------------------------------------ COLOPHON -
     \begin{vplace}[0.5]
       \centering
+   Philipp Poll
+Produttore	Libertine Open Fonts Project   There is a single copy of this book.
       This book has been designed 
       Printed in \ldots
     \end{vplace}
