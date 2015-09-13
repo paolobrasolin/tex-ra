@@ -120,7 +120,7 @@
 \renewcommand{\cftchapterindent}{3\iL}
 \renewcommand{\cftchapterfont}{\normalfont} 
 \renewcommand{\cftchapterleader}{} 
-\renewcommand{\cftchapterformatpnum}{, \itshape}
+\renewcommand{\cftchapterformatpnum}{\libertine\ --- \itshape}
 \renewcommand{\cftchapterafterpnum}{\cftparfillskip} 
 \makeatletter
 \setlength{\cftbeforechapterskip}{0.5em \@plus\p@}
@@ -202,8 +202,7 @@
 }
 
 % The fill here is saturating underfull vboxes on chapter heading pages.
-\def\makechapter|#1|#2|{\chapter{#2}\vfill\input{chapters/#1}
-}
+\def\makechapter|#1|#2|{\chapter{#2}\vfill\input{chapters/#1}}
 
 % ===================================================================== CETERA =
 
@@ -226,7 +225,7 @@
   tannaka symbol/.style={code={
     \pic{black sun symbol=1ex};}}
 }
-
+% REPLACE WITH ANONYMOUS BREAK
 \NewDocumentCommand\raGo{sm}{%
   \IfBooleanF{#1}{
     \Needspace*{5\baselineskip}%
@@ -273,7 +272,7 @@
       {Edited and typeset by Paolo al-Imk\=an\=\i\ Brasolin}\par
     \endgroup
     \cleartorecto % ------------------------------------------------- CONTENTS -
-    %\tableofcontents*
+    \tableofcontents*
   \mainmatter % ==================================================== MAIN TEXT =
     \pagestyle{main}
     \foreach \chap in \chapterlist {\expandafter\makechapter\chap}
@@ -281,11 +280,29 @@
     \pagestyle{empty}
     \cleartorecto\cleartoverso % ------------------------------------ COLOPHON -
     \vspace*{\fill}
-    \begin{adjustwidth}{0.25\textwidth}{0.25\textwidth}
-      \centering
-Printed in September 2015 by Blurb.
-This book is set using typefaces from the Linux Libertine family
-designed by Philipp Poll and the devan\=agar\=\i\ font by Frans Velthuis.
+    \begin{adjustwidth}{0.18\textwidth}{0.18\textwidth}
+      \footnotesize
+      \parindent=0pt
+      \parfillskip=0pt
+      Printed in September 2015 by Blurb, this book was
+      composed using \LaTeX\ and set with typefaces from
+      the Linux Libertine family designed by Philipp Poll
+      --- the only exception being the indian glyph for O\d m,
+      taken from the devan\=agar\=\i\ fonts by Frans Velthuis.\par
+      \medskip
+      Three images by NASA Goddard Space Flight Center
+      and its Scientific Visualization Studio form the covers
+      design; their crasis bears no exactitude except the
+      relative sizes of Terra and Sol. The latter mugged
+      during the coronal mass ejection of 31 August 2012.\par
+      \bigskip
+      This edition is limited to a single copy and is meant
+      for a unique person. It was designed to be amiably
+      squarish in tickling the most ardent imagination.
+      And last but foremost it is a simple token of affection.\par
+      \smallskip
+      \raggedleft\itshape
+      Paolo al-Imk\=an\=\i\ Brasolin\par
     \end{adjustwidth}
     \vfill
     \cleartoverso % ----------------------------------------------------- leaf -
