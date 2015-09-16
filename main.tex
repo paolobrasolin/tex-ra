@@ -1,312 +1,314 @@
-% ################################################################ LET'S DANCE #
-\documentclass[10pt]{memoir}
+% ###################################################################### START #
 
-\usepackage{xcolor}
-\usepackage{xparse}
+% ================================================================== DEBUGGING =
 
-% ================================================ FONTS & ENCODING & LANGUAGE =
+%\version[temporary]
+\showframe[edge]
 
-\usepackage[rm]{libertine}
-\usepackage[LY1]{fontenc} % Better ligatures than T1
-\usepackage[libertine]{newtxmath}
-\usepackage[utf8]{inputenc}
+% ====================================================================== PDF/X =
 
-\usepackage{newunicodechar}
-\newunicodechar{ā}{\=a}
-\newunicodechar{ī}{\=\i}
+\setupinteraction
+  [title=ra,
+   author=Sam Hughes,
+   keyword={{KEYWORD1, KEYWORD2}, KEYWORD3}]
 
-\newcommand\raSup[1]{\raisebox{0.85ex}{\scalebox{.54}{\libertineSB\textls[78]{#1}}}}                                   
-\newcommand\raSub[1]{\raisebox{-.26ex}{\scalebox{.54}{\libertineSB\textls[78]{#1}}}}
+\setupbackend
+  [format=PDF/X-3:2002,
+   intent=Blurb_ICC_Profile.icc]
+
+% ====================================================================== FONTS =
+
+\starttypescriptcollection[libertine]
+  \starttypescript [serif] [libertine]
+    \definefontsynonym [Libertine-Regular]  [file:LinLibertine_R]
+    \definefontsynonym [Libertine-Italic]   [file:LinLibertine_RI]
+    \definefontsynonym [Libertine-Bold]     [file:LinLibertine_RB]
+    \definefontsynonym [Libertine-SemiBold] [file:LinLibertine_RZ]
+    \definefontsynonym [Libertine-Display]  [file:LinLibertine_DR]
+  \stoptypescript
+  \starttypescript [serif] [libertine] [name]
+%    \setups[font:fallback:serif]
+    \definefontsynonym [Serif]          [Libertine-Regular]  [features=default]
+    \definefontsynonym [SerifItalic]    [Libertine-Italic]   [features=default]
+    \definefontsynonym [SerifBold]      [Libertine-Bold]     [features=default]
+    \definefontsynonym [SerifSemiBold]  [Libertine-SemiBold] [features=default]
+    \definefontsynonym [SerifDisplay]   [Libertine-Display]  [features=default]
+  \stoptypescript
+  \starttypescript [libertine]
+    \definetypeface [libertine] [rm] [serif] [libertine] [default]
+%    \quittypescriptscanning
+  \stoptypescript
+\stoptypescriptcollection
+
+\definefontfeature[default][libertine]
+  [protrusion=quality,
+   expansion=quality,
+   itlc=yes,
+   liga=yes]
 
 
-\def\DevnagVersion{2.15}
-\usepackage{devanagari}
+\setupbodyfont [libertine,10pt]
 
+\definebodyfont [10pt] [rm]
+  [df=SerifDisplay sa 1.000,
+   dfb=SerifDisplay sa 2.074,
+   ssb=SerifSemiBold sa 0.535,
+   bfe=SerifBold sa 5]
 
-\def\raAum{{\dn :}}
-\def\raAleph{\raisebox{-0.09898pt}{\includegraphics{aleph}}}
+\definealternativestyle [display]  [\df] []
 
+\definebodyfontenvironment[10pt]
+  [em=italic]
 
+\setupalign[hz,hanging]
+\setuptolerance[horizontal,strict]
+\hbadness=1200
 
-\usepackage[british]{babel}
-\hyphenation{boo-o-o-o-o-o-o-o-o-o-oop ka-dhu-nda}
-\def\raSlash{\slash\hspace{0pt}}
+\setuppagenumbering[alternative=doublesided,location=footer]
 
 % ===================================================================== LAYOUT =
 
-\usepackage{calc}
+\definepapersize [pocket]     [width=5.000in,height=8.000in]
+\definepapersize [overpocket] [width=5.125in,height=8.250in]
+\setuppapersize[pocket][overpocket]
+\setuplayout
+  [topspace=36bp, height=504bp,
+   header=0bp, headerdistance=0bp,
+   footer=18bp,footerdistance=18bp,
+   backspace=63bp, width=261bp,
+   leftmargin=0bp, leftmargindistance=0bp,
+   rightmargin=0bp, rightmargindistance=0bp,
+   location={doublesided,middle,left}]
 
-\def\mydeflength#1#2{ % \defLength{name}{value}
- \expandafter\newlength\csname#1\endcsname
- \expandafter\setlength\csname#1\endcsname{#2}}
+% =================================================================== HEADINGS =
 
-\mydeflength{qI}{0.25in}  % 1/4 inch
-\mydeflength{eI}{0.125in} % 1/8 inch
+\unexpanded\def\HeadTitle#1#2%
+  {\framed[width=\hsize,frame=off,align={flushright,hanging}]{#2}}
 
-% ------------------------------------------------------------------- GEOMETRY -
+\definemeasure [beforechapterspace] [0.3\textheight]
+\definemeasure [afterchapterspace]  [0.2\textheight]
 
-\mydeflength{wL}{5in}     % width
-\mydeflength{hL}{8in}     % height
-\mydeflength{bL}{0.125in} % bleed
-\mydeflength{iL}{0.25in}  % inset
-\mydeflength{sL}{0.625in} % spine inset
+\setuphead[chapter]
+  [page={empty,footer,right}, style=dfb,
+   before={\blank[\measure{beforechapterspace},force]},
+   command=\HeadTitle,
+   after={\blank[\measure{afterchapterspace}]}]
 
-\setstocksize{\hL+2\bL}{\wL+\bL}
-\settrimmedsize{\hL}{\wL}{*}
-\settrims{\bL}{\bL}
-\setlrmarginsandblock{\sL+\qI}{\iL+\qI}{*}
-\setulmarginsandblock{\iL+\qI}{\iL+2\qI}{*}
-\setheadfoot{\headheight}{\qI}
-\setheaderspaces{0in}{*}{*}
-%\setmarginnotes{0in}{0in}{0in}
-\checkandfixthelayout
-\trimXmarks
+% =================================================================== LANGUAGE =
 
-% ---------------------------------------------------------------------- BOXES -
+\language[uk]
+\hyphenation{ka-dhu-nda boo-o-o-o-o-o-o-o-o-o-oop}
 
-%\overfullrule=50pt
-%\tolerance=300
-%\sloppy
-%\hbadness=10000
+% ======================================================================== TOC =
 
-\emergencystretch=0.4em
+\setupheadtext[content=Chapters]
 
-% Suppress the survivors
-\vbadness=7000
-\hfuzz=3pt
+\unexpanded\def\PageCommand#1%
+  { — {\em #1}}
 
-% ----------------------------------------------------------------- PAGE STYLE -
+\setuplist[chapter]
+  [alternative=a,
+   headnumber=no,
+   margin=3em,
+   pagecommand=\PageCommand]
 
-\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
-    \node[shape=circle,inner sep=1pt,white,fill=black](char){#1};}}
+% =========================================================== CHAPTER HANDLING =
 
-\makepagestyle{main}
-\makeevenfoot {main}{}{\raThepage}{}
-\makeoddfoot  {main}{}{\raThepage}{}
+\unprotect
+  \def\M@keChapter<#1>#2(#3){
+    \doifemptyelse{#3}
+      {\startchapter[title={#2}]}
+      {\startchapter[title={#3},list={#2}]}
+      \input chapters/#1
+    \stopchapter}
+  \def\MakeChapter#1{\@EA\M@keChapter#1}
+\protect
+  
+% ===================================================================== WORLDS =
 
-\aliaspagestyle {chapter}{main}
+\let\CurrentWorld\relax
+\def\SetWorld#1{\gdef\CurrentWorld{#1}}
+\def\SwitchWorld#1{\SwitchBreak{#1}\SetWorld{#1}}
+\def\SwitchBreak#1{\blank[big]{\hfil\useMPgraphic{#1}\hfil}\blank[big]\nobreak}
 
-\NewDocumentCommand\raThepage{}{ % between should not be necessary
-  \def\isReality{reality}\ifx\raWorld\isReality{\thepage}\fi%
-  \def\isTannaka{tannaka}\ifx\raWorld\isTannaka{\circled{\thepage}}\fi}
+\startreusableMPgraphic{reality}
+  draw fullcircle scaled 5.5;
+  fill fullcircle scaled 2.0;
+\stopreusableMPgraphic
 
-\setlength{\parindent}{0.75em}
+\startreusableMPgraphic{tannaka}
+  unfill fullcircle scaled 6;
+  draw fullcircle scaled 3.5
+       withpen pencircle scaled 1.5;
+\stopreusableMPgraphic
 
-% ------------------------------------------------------------ CHAPTER HEADING -
+\startreusableMPgraphic{between}
+  draw fullcircle scaled 5.5;
+  fill fullcircle scaled 2.0;
+  draw fullcircle scaled 3.5 xshifted 3.5
+       withpen pencircle scaled 1.5;
+\stopreusableMPgraphic
 
-\makechapterstyle{ra}{%
-  \def\chapterheadstart{\vspace*{3\beforechapskip}}
-  \let\printchaptername\relax
-  \let\chapternamenum\relax
-  \let\printchapternum\relax
-  \let\afterchapternum\relax
-  \let\printchapternonum\relax
-  \def\chaptitlefont{\Huge\libertineDisplay}
-  \def\printchaptertitle##1{%
-    \begin{adjustwidth}{0.2\textwidth}{0in}%
-      \raggedleft\chaptitlefont ##1\par%
-    \end{adjustwidth}}
-  \def\afterchaptertitle{\vskip 2\afterchapskip}}
+% ================================================================= TITLE PAGE =
 
-\chapterstyle{ra}
+\startuseMPgraphic{sol}
+  path p,q,r;
+  p:=fullcircle scaled (2*72*12/12);
+  q:=fullcircle scaled (2*72*11/12);
+  r:=fullcircle scaled (2*72*4/12);
+  fill p; unfill q; fill r;
+\stopuseMPgraphic
 
-% ------------------------------------------------------------------------ TOC -
+% =============================================================== PAGE NUMBERS =
 
-%\setsecnumdepth{none}
-\maxsecnumdepth{none}
+\startuseMPgraphic{tannakablot}
+  fill fullcircle scaled \overlaywidth;
+\stopuseMPgraphic
 
-\AtBeginDocument{\addtocontents{toc}{\protect\thispagestyle{empty}}} 
+\defineoverlay[tannakablot][\useMPgraphic{tannakablot}]
 
-\renewcommand{\cftchapterindent}{3\iL}
-\renewcommand{\cftchapterfont}{\normalfont} 
-\renewcommand{\cftchapterleader}{} 
-\renewcommand{\cftchapterformatpnum}{\libertine\ --- \itshape}
-\renewcommand{\cftchapterafterpnum}{\cftparfillskip} 
-\makeatletter
-\setlength{\cftbeforechapterskip}{0.5em \@plus\p@}
-\makeatother
+\setuppagenumbering[command=\RaPageNumbering]
 
-% ============================================================= DRAFTING TOOLS =
-
-\newcommand\raFix[1]{#1}
-
-\iftrue
-
-\renewcommand\raFix[1]{#1}
-
-%\usepackage[driver=none,pass,showframe]{geometry}
-\usepackage{lipsum}
-
-\usepackage{eso-pic}
-\usepackage{tikzpagenodes}
-
-\makeatletter
-\newcommand\drawguides{%
-  \begin{tikzpicture}[overlay,remember picture,dotted]
-    \coordinate (size ref) at (\ifodd\c@page{  0}\else{-\bL}\fi,-\bL);
-    \coordinate (trim ref) at (                               0,   0);
-    \coordinate (safe ref) at (\ifodd\c@page{\sL}\else{ \iL}\fi, \iL);
-    \draw[black]   (size ref) rectangle ++(\wL+\bL,\hL+2\bL);
-    \draw[red]     (trim ref) rectangle ++(\wL,\hL);
-    \draw[magenta] (safe ref) rectangle ++(\wL-\iL-\sL,\hL-2\iL);
-    \begin{scope}[even odd rule, gray]
-      \fill (trim ref) rectangle ++(\wL,\hL)
-            (size ref) rectangle ++(\wL+\bL,\hL+2\bL);
-    \end{scope}
-  \end{tikzpicture}}
-\makeatother
-
-\AddToShipoutPicture{\drawguides}
-
-\fi
-
-% =================================================================== CHAPTERS =
-
-\def\chapterlist{%
-  |city|Thaumic city|,
-  |sufficiently|Sufficiently advanced technology|,
-  |ignorance|{From~ignorance, lead~me~to~truth}|,
-  |isnt|Magic isn’t|,
-  |know|What you don’t know|,
-  |ragdoll|Ragdoll physicist|,
-  |broken|Broken ’verse|,
-  |thaumonuclear|Thaumonuclear|,
-  |jesus|The Jesus machine|,
-  |space|Space magic|,
-  |yantra|The~seventh impossible~thing|,
-  |daemons|Daemons|,
-  |abstract|Abstract weapon|,
-  |death|Death~surrounds this~machine|,
-  |zero|Zero day|,
-  |aum|\raAum|, 
-  |bare|Bare metal|,
-  |people|Hatt’s people|,
-  |deeper|Deeper magic|,
-  |cabal|There is no Cabal|,
-  |protagonism|Protagonism|,
-  |scrap|Scrap brain zone|,
-  |inferno|Inferno|,
-  |darkness|{From~darkness, lead~me~to~light}|,
-  |direct|Direct sunlight|,
-  |war|Abstract war|,
-  |real|Everything is real|,
-  |hate|Why do you hate Ra|,
-  |thursdayism|Last thursdayism|,
-  |akheron|Akheron|,
-  |all|All hell|,
-  |rajesh|{From~death, lead~me~to~immortality}|,
-  |machine|Machine space|,
-  |work|It has to work|,
-  |just|Why not just|,
-  |destructor|Destructor|
-}
-
-% The fill here is saturating underfull vboxes on chapter heading pages.
-\def\makechapter|#1|#2|{\chapter{#2}\vfill\input{chapters/#1}}
-
-% ===================================================================== CETERA =
+\def\RaPageNumbering#1{\doifelse{\CurrentWorld}{tannaka}
+  {\inframed[frame=no,background=tannakablot,offset=2pt]{\white #1}}{#1}}
 
 
-\let\raEmph\emph
-\def\raMagic#1{{\textbf{#1}}}
-\def\raMath#1{\textit{#1}}
+% ===================================================================== GLYPHS =
 
-\tikzset{pics/.cd,
-  sun symbol/.style={code={
-    \fill circle (#1/4);
-    \draw[line width=#1/8] circle (#1);}},
-  black sun symbol/.style={code={
-    \draw[line width=#1*11/16] circle (#1*19/32);}},
-  reality symbol/.style={code={
-    \pic{sun symbol=1ex};}},
-  between symbol/.style={code={
-    \pic at (-1ex*19/32,0) {sun symbol=1ex};
-    \pic at (1ex*19/32,0) {black sun symbol=1ex};}},
-  tannaka symbol/.style={code={
-    \pic{black sun symbol=1ex};}}
-}
-% REPLACE WITH ANONYMOUS BREAK
-\NewDocumentCommand\raGo{sm}{%
-  \IfBooleanF{#1}{
-    \Needspace*{5\baselineskip}%
-    \nointerlineskip\bigskip%
-    \begingroup\centering%
-    \noindent\tikz{\pic{#2 symbol}}\par%
-    \endgroup%
-    \bigskip\nointerlineskip%
-  }\gdef\raWorld{#2}}
+\def\Pol{\externalfigure[glyph.1][width=72bp]}
+\def\Aum{\strut\raise-0.07em\hbox{\smash{\externalfigure[glyph.2][height=1.2em]}}}
 
-% ##############################################################################
-% ##############################################################################
+%\setupblackrules
+%  [width=1ex,
+%   height=0.77em,
+%   depth=-0.73em]
+%\setupframed
+%  [height=1em,location=keep,offset=overlay]
+%less √\rlap{\blackrule}3√\framed{3rad} is the measure $\sqrt{3}$ %½}
 
-\usepackage[final, babel]{microtype}
+%\showboxes
+%\showmakeup
 
-\begin{document} % ################################################ BOOK START #
-  \frontmatter % ========================================== PRELIMINARY MATTER =
-    \pagestyle{empty}
-    \null % ------------------------------------------------------------- leaf -
-    \cleartorecto % ----------------------------------------------- HALF TITLE -
-    \begingroup\centering
-      \vspace*{\fill}\includegraphics[height=40pt]{glyph}\par
-    \endgroup
-    \cleartorecto % ----------------------------------------------- TITLE PAGE -
-    \begingroup\centering
-      \null\bigskip
-      {\huge\libertineDisplay Sam Hughes}\par
-      \bigskip
-      {\fontsize{50pt}{0}\raMagic{ra}}\par
-      \vfill
-      \tikz{\pic{sun symbol=1in}}\par
-      \vfill
-    \endgroup
-    \clearpage % -------------------------------------------- TITLE PAGE VERSO -
-    \begingroup\centering
-      \vspace*{\fill}
-      {September 2015}\par
-      {Limited edition of a single copy}\par
-      \bigskip
-      \emph{Dedicato alla luce che effondi}\par
-      \vfill\vfill\vfill
-      {{\ttfamily ra} © Sam Hughes 2011--14}\par
-      {Cover images courtesy of {\scshape nasa}}\par
-      {Edited and typeset by Paolo al-Imk\=an\=\i\ Brasolin}\par
-    \endgroup
-    \cleartorecto % ------------------------------------------------- CONTENTS -
-    \tableofcontents*
-  \mainmatter % ==================================================== MAIN TEXT =
-    \pagestyle{main}
-    \foreach \chap in \chapterlist {\expandafter\makechapter\chap}
-  \backmatter % =================================================== END MATTER =
-    \pagestyle{empty}
-    \cleartorecto\cleartoverso % ------------------------------------ COLOPHON -
-    \vspace*{\fill}
-    \begin{adjustwidth}{0.18\textwidth}{0.18\textwidth}
-      \footnotesize
-      \parindent=0pt
+% ####################################################################### TEXT #
+
+\starttext
+
+\startfrontmatter
+
+  \setuppagenumbering[location=]
+
+  \null
+  \page[force,blank,blank]
+
+  \startstandardmakeup[align=center,bottom=]
+    {\hfil\Pol\hfil}
+  \stopstandardmakeup
+  
+  \definemeasure [halfinch] [36bp]
+  \startstandardmakeup[align=center,doublesided=no,bottom={\blank[\measure{halfinch}]}]
+    \dfb Sam Hughes \blank[2*big]
+    \bfe ra \vfil\vfil\vfil
+    {\hfil\useMPgraphic{sol}\hfil}
+  \stopstandardmakeup
+  
+  \startstandardmakeup[align=center,page=no,bottom=]
+    September 2015 \\
+    Limited edition of a single copy \blank[2*big]
+    {\em Dedicato alla luce che effondi} \vfil\vfil
+    ra © Sam Hughes 2011—14 \\
+    Cover images courtesy of NASA \\
+    Edited and typeset by Paolo al-Imkānī Brasolin
+  \stopstandardmakeup
+
+  \start
+    \setuphead[chapter][page=no]
+    \setupinterlinespace[0.9]
+    \completecontent
+  \stop
+
+\stopfrontmatter
+
+\startbodymatter
+
+  \setcounter[userpage][-1]
+
+  \processcommalist
+    [<city> Thaumic city (),
+     <sufficiently> Sufficiently advanced technology%
+                   (Sufficiently advanced\\ technology),
+    {<ignorance> From ignorance, lead me to truth%
+                (From ignorance,\\ lead me to truth)},
+     <isnt> Magic isn’t (),
+     <know> What you don’t know (),
+     <ragdoll> Ragdoll physicist (),
+     <broken> Broken ’verse (),
+     <thaumonuclear> Thaumonuclear (),
+     <jesus> The Jesus machine (),
+     <space> Space magic (),
+     <yantra> The seventh impossible thing%
+             (The seventh\\ impossible thing),
+     <daemons> Daemons (),
+     <abstract> Abstract weapon (),
+     <death> Death surrounds this machine%
+            (Death surrounds\\ this machine),
+     <zero> Zero day (),
+     <aum> \Aum (),
+     <bare> Bare metal (),
+     <people> Hatt’s people (),
+     <deeper> Deeper magic (),
+     <cabal> There is no Cabal (),
+     <protagonism> Protagonism (),
+     <scrap> Scrap brain zone (),
+     <inferno> Inferno (),
+    {<darkness> From darkness, lead me to light%
+               (From darkness,\\ lead me to light)},
+     <direct> Direct sunlight (),
+     <war> Abstract war (),
+     <real> Everything is real (),
+     <hate> Why do you hate Ra (),
+     <thursdayism> Last thursdayism (),
+     <akheron> Akheron (),
+     <all> All hell (),
+    {<rajesh> From death, lead me to immortality%
+             (From death,\\ lead me to immortality)},
+     <machine> Machine space (),
+     <work> It has to work (),
+     <just> Why not just (),
+     <destructor> Destructor ()]\MakeChapter
+
+\stopbodymatter
+
+\startbackmatter
+
+  \startstandardmakeup[page=empty]
+    \startnarrower[3*middle] \small
+      \setupalign[hz,hanging,nothyphenated]
       \parfillskip=0pt
       Printed in September 2015 by Blurb, this book was
-      composed using \LaTeX\ and set with typefaces from
+      composed using \ConTeXt\ and set with typefaces from
       the Linux Libertine family designed by Philipp Poll
-      --- the only exception being the indian glyph for O\d m,
-      taken from the devan\=agar\=\i\ fonts by Frans Velthuis.\par
-      \medskip
+      — the only exception being the indian glyph for Oṃ,
+      taken from the devanāgarī fonts by Frans Velthuis.
+      \blank[big]
       Three images by NASA Goddard Space Flight Center
       and its Scientific Visualization Studio form the covers
       design; their crasis bears no exactitude except the
       relative sizes of Terra and Sol. The latter mugged
-      during the coronal mass ejection of 31 August 2012.\par
-      \bigskip
+      during the coronal mass ejection of 31 August 2012.
+      \blank[big,medium]
       This edition is limited to a single copy and is meant
       for a unique person. It was designed to be amiably
       squarish in tickling the most ardent imagination.
-      And last but foremost it is a simple token of affection.\par
-      \smallskip
-      \raggedleft\itshape
-      Paolo al-Imk\=an\=\i\ Brasolin\par
-    \end{adjustwidth}
-    \vfill
-    \cleartoverso % ----------------------------------------------------- leaf -
-    \null
-\end{document} % #################################################### BOOK END #
+      And last but foremost it is a simple token of affection.
+      \blank[small]
+      \wordright{\it Paolo al-Imkānī Brasolin}
+    \stopnarrower
+  \stopstandardmakeup
 
-% ######################################################################## EOF #
+  \page[empty,empty]
+
+\stopbackmatter
+
+\stoptext
+
+% ####################################################################### STOP #

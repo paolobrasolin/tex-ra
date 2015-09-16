@@ -1,11 +1,11 @@
 *
 
-!.gitignore
-!aleph.tex
 !compile.sh
-!cover.tex
 !fetch.pl
-!glyph.eps
-!glyph-white.eps
+!.gitignore
+!glyph.mps
+!LEGACY
+!LEGACY/*
 !main.tex
+!cover.tex
 !README.md

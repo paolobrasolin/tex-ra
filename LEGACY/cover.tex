@@ -1,0 +1,161 @@
+% ################################################################ LET'S DANCE #
+
+%\pdfcompresslevel=0
+
+\documentclass{minimal}
+
+\def\HUGE {\fontsize{100}{0}\selectfont}
+\def\LARGE{\fontsize{20}{0}\selectfont}
+\def\Huge {\fontsize{50}{0}\selectfont}
+\def\Large{\fontsize{20}{0}\selectfont}
+\def\small{\fontsize{10}{12}\selectfont}
+
+\usepackage[cmyk]{xcolor}
+\definecolor{purewhite}{cmyk}{0.0,0.0,0.0,0}
+\definecolor{pureblack}{cmyk}{0.0,0.0,0.0,1}
+\definecolor{warmblack}{cmyk}{0.2,0.7,0.7,1}
+\definecolor{richblack}{cmyk}{0.5,0.6,0.5,1}
+\definecolor{coolblack}{cmyk}{0.8,0.2,0.2,1}
+
+\pagecolor{richblack}
+
+% ============================================================= CAGING TOOLKIT =
+
+\def\cs#1{\csname#1\endcsname}
+
+\usepackage{calc}
+
+\def\defLength#1#2{ % \defLength{name}{value}
+ \expandafter\newlength\csname#1\endcsname
+ \expandafter\setlength\csname#1\endcsname{#2}}
+
+\usepackage{tikz}
+\usetikzlibrary{calc}
+
+\def\defCageSizes#1#2#3#4{ % \defCageSizes{baseName}{width}{height}{padding}
+  \defLength{#1W}{#2}                    % baseNameW  = width
+  \defLength{#1H}{#3}                    % baseNameH  = height
+  \defLength{#1P}{#4}                    % baseNameP  = padding
+  \defLength{#1Wp}{#2 - (#4) * \real{2}} % baseNameWp = padded width
+  \defLength{#1Hp}{#3 - (#4) * \real{2}} % baseNameHp = padded height
+}
+
+\def\cage#1[#2][#3] (#4) at (#5);{
+  \node [ cage={#1W}{#1H},   #2 ] (#4 outer cage) at (#5) {};
+  \node [ cage={#1Wp}{#1Hp}, #3 ] (#4 inner cage) at (#4 outer cage.center) {};
+}
+
+\tikzset{
+  cage/.style 2 args={ draw, ultra thin, darkgray
+                     , minimum width  = \cs{#1}
+                     , minimum height = \cs{#2} },
+  extended line/.style={shorten >=-#1,shorten <=-#1},
+  extended line/.default=1cm
+}
+
+% ============================================================== PAGE GEOMETRY =
+
+\defLength{hL}{8in}  % cover height
+\defLength{wL}{5in}  % cover width
+\defLength{gL}{62bp} % gutter width - 420 pages WARNING 68 NOT 62
+\defLength{bL}{9bp}  % bleed
+\defLength{iL}{18bp} % inset
+
+\defLength{swL}{\bL+\wL+\gL+\wL+\bL} % spread width
+\defLength{shL}{\bL+\hL+\bL}         % spread height
+
+\usepackage[papersize={\swL,\shL}]{geometry}
+
+\defCageSizes{spread}{\swL}{\shL}{\bL}
+\defCageSizes{cover}{\wL}{\hL}{\iL}
+\defCageSizes{gutter}{\gL}{\hL}{\iL}
+\defCageSizes{isbn}{168bp}{73bp}{0bp}
+
+% ================================================= FONTS & ECODING & LANGUAGE =
+
+\usepackage[rm]{libertine}
+\usepackage[LY1]{fontenc} % Better ligatures than T1
+\usepackage[utf8]{inputenc}
+
+\usepackage[british]{babel}
+\hyphenation{}
+
+% ##############################################################################
+% ##############################################################################
+
+\usepackage[final, babel]{microtype}
+%\UseMicrotypeSet{all}
+
+\begin{document} % ############################################### COVER START #
+  \begin{tikzpicture}[overlay,remember picture]
+    \cage{spread}[][] (spread) at (current page.center);
+    \begin{scope}[even odd rule, black!90!white]
+      \fill (spread outer cage.north west) rectangle (spread outer cage.south east)
+            (spread inner cage.north west) rectangle (spread inner cage.south east);
+    \end{scope}
+    \cage{gutter}[][] (gutter) at (spread inner cage.center);
+    \cage{cover}[anchor=east, fill=warmblack][] (front cover) at (spread inner cage.east);
+    \cage{cover}[anchor=west, fill=coolblack][] (back cover) at (spread inner cage.west);
+    \cage{isbn}[anchor=south, fill=white][] (isbn) at ($(back cover outer cage.south)+(0bp,36bp)$);
+    \coordinate (sun point) at ($(front cover inner cage.north)!0.4!(front cover inner cage.south)$);
+    \coordinate (earth point) at ($(back cover inner cage.north)!0.8!(back cover inner cage.south)$);
+    \coordinate (cross point) at ($(earth point)!0.5!(sun point)$);
+%    \draw (earth point) -- (sun point);
+    \pgfmathanglebetweenpoints
+      {\pgfpointanchor{earth point}{center}}
+      {\pgfpointanchor{sun point}{center}}
+    \def\eclipticangle{\pgfmathresult}
+    \pgfmathsetmacro\galaxyangle{\eclipticangle-60}
+%    \draw (cross point) +(\galaxyangle:\swL) -- +(\galaxyangle+180:\swL);
+    \node[ fill, orange
+         , circle, inner sep=0in, minimum size=4in] (sun) at (sun point) {};
+    \node[ fill, cyan
+         , circle, inner sep=0in, minimum size=4in/109.2] (earth) at (earth point) {};
+%    \node at (current page.center){\includegraphics[width=\swL,height=\shL]{cover.png}};
+    \node[ white, font=\libertineDisplay\LARGE
+         ]
+         (author)
+         at ($(front cover inner cage.north)!0.5!(sun.north)$)
+         {Sam Hughes};
+    \node[ white
+         , font=\HUGE\bfseries
+         ]
+         (title)
+         at ($(front cover inner cage.south)!0.5!(sun.south)$)
+         {ra};
+    \node[ text width=(\wL-2\iL)*0.52
+         , font=\small
+         , align=justify
+         , white
+         ]
+         (teaser)
+         at ($(back cover inner cage.north)!0.4!(back cover inner cage.south)$) {
+           \parindent=0pt
+           Magic is real.\par\bigskip
+           \parfillskip=0pt
+           Discovered in the 1970s, magic is now a
+           \emph{bona fide} field of engineering. There's magic
+           in heavy industry and magic in your home.
+           It's what's next after electricity.\par\smallskip
+           Student mage Laura Ferno has designs
+           on the future: her mother died trying
+           to reach space using magic, and Laura
+           wants to succeed where she failed. But
+           first, she has to work out what went
+           wrong. And who her mother really was.\par\medskip
+           \raggedright
+           And whether, indeed, she's dead at all...\par };
+    \node[ white
+         , rotate=-90
+         , anchor=west
+         , font=\libertineDisplay\Large
+         ] at (gutter inner cage.north) {Sam Hughes};
+    \node[ white
+         , rotate=-90
+         , font=\Huge\bfseries
+         ] at ($(gutter inner cage.north)!0.4!(gutter inner cage.south)$) {ra};
+    \node[anchor=south] at (gutter inner cage.south) {\includegraphics[width=0.7\gL]{glyph-white}};
+  \end{tikzpicture}%
+\end{document} % ################################################### COVER END #
+
+% ######################################################################## EOF #

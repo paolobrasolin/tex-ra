@@ -63,23 +63,23 @@ my %edits = (
                        "Atlantis' last engine" => "Atlantis’ last engine",
                        "40 miles' range" => "40 miles’ range",
                        "the Fernos' spot" => "the Fernos’ spot",
-                       'O<sub>2</sub>' => 'O₂' },
+                       'O<sub>2</sub>' => 'O\raSub{2}' }, # ₂
   "know"          => { # ltf15
                        '<tt></tt>uum' => '<tt>uum</tt>',
                        "four weeks' rent" => "four weeks’ rent",
                        '+ <var>S</var><sub><var>t</var>;<var>&tau;</var></sub>'
-                         => 'TODO' },
+                         => '\textit{+S\textsubscript{t;$\tau\kern-1.0512pt$;}}' },
   "ragdoll"       => { "Tómas' response" => "Tómas’ response" },
   "broken"        => { "Atlantis' nose cone" => "Atlantis’ nose cone", 
-                       '√3' => '√3½'  },
-  "thaumonuclear" => { 'SO<sub>2</sub>' => 'SO₂' },
+                       '√3' => '3\raSup{½}'  },
+  "thaumonuclear" => { 'SO<sub>2</sub>' => 'SO\raSub{2}' }, # ₂
   "jesus"         => {},
   "space"         => { "five years' time" => "five years’ time",
-                       'O<sub>2</sub>' => 'O₂' },
+                       'O<sub>2</sub>' => 'O\raSub{2}' }, # ₂
   "yantra"        => {},
   "daemons"       => { "St. Nicholas' Hill" => "St.~Nicholas’ Hill",
                        'L<sup>A</sup>T<sub>E</sub>X' => '\LaTeX' },
-  "abstract"      => { 'א**' => '\aleph**' },
+  "abstract"      => { 'א**' => '\raAleph\kern-.15ex*\kern-.15ex*\kern-.3ex' },
   "death"         => {},
   "zero"          => {},
   "aum"           => {},
@@ -87,22 +87,21 @@ my %edits = (
   "people"        => {},
   "deeper"        => { "mages' toolboxes" => "mages’ toolboxes",
                        "'88" => "’88",
-                       "'89" => "’89"
-#                       'ζ' => '$\zeta\kern-1.23999pt$', # among italic, unkern
-#                       'ι' => '$\iota$', # has no kerning
-#                       'EMμ' => '\textit{EM$\mu$}',
-#                       'χ' => '$\chi$' }, # loner among roman, don't unkern
-},
+                       "'89" => "’89",
+                       'ζ' => '$\zeta\kern-1.23999pt$', # among italic, unkern
+                       'ι' => '$\iota$', # has no kerning
+                       'EMμ' => '\textit{EM$\mu$}',
+                       'χ' => '$\chi$' }, # loner among roman, don't unkern
   "cabal"         => { "'72" => "’72" },
   "protagonism"   => { '..........' => 'HOLY CRAP DOTS' },
-  "scrap"         => { '10<sup>18</sup>' => '10¹⁸' },
+  "scrap"         => { '10<sup>18</sup>' => '10\raSup{18}' }, # ¹⁸
   "inferno"       => {},
   "darkness"      => {},
   "direct"        => { "Henders' simple answer" => "Henders’ simple answer",
-                       '10<sup>18</sup>' => '10¹⁸' },
+                       '10<sup>18</sup>' => '10\raSup{18}' }, # ¹⁸
   "war"           => {},
   "real"          => { "full Moons' worth" => "full Moons’ worth",
-                       'XE<sub>171</sub>' => 'XE₁₇₁' },
+                       'XE<sub>171</sub>' => 'XE\raSub{171}' }, # ₁₇₁
   "hate"          => { "Actuals' next step" => "Actuals’ next step" },
   "thursdayism"   => {},
   "akheron"       => {},
@@ -111,7 +110,7 @@ my %edits = (
                        "'72" => "’72",
                        "'73" => "’73" },
   "machine"       => { "astronauts' lives" => "astronauts’ lives",
-                       'א**' => '\aleph**' },
+                       'א**' => '\raAleph\kern-.15ex*\kern-.15ex*\kern-.3ex' },
   "work"          => {},
   "just"          => { "'ports" => "’ports",
                        "the blinds' edges" => "the blinds’ edges" },
@@ -167,7 +166,7 @@ while (my ($id, $edit) = each %edits) {
 
   # Apply edits.
   while (my ($original, $fixed) = each $edit) {
-    $t =~ s/\Q$original/{\\red $fixed}/g;
+    $t =~ s/\Q$original/\\raFix{$fixed}/g;
   }
 
   # I'll just leave this here for sanity checks:
@@ -176,18 +175,18 @@ while (my ($id, $edit) = each %edits) {
   # --------------------------------------------------------- CONVERT TO LATEX -
 
   # Format emphasis. Two passes to handle nesting.
-  $t =~ s/<(i|em)>(.*?)<\/\1>/{\\em $2}/g;
-  $t =~ s/<(i|em)>(.*?)<\/\1>/{\\em $2}/g;
+  $t =~ s/<(i|em)>(.*?)<\/\1>/\\raEmph{$2}/g;
+  $t =~ s/<(i|em)>(.*?)<\/\1>/\\raEmph{$2}/g;
 
   # Format magic.
-  $t =~ s/<(tt|code)>(.*?)<\/\1>/{\\bf $2}/g;
+  $t =~ s/<(tt|code)>(.*?)<\/\1>/\\raMagic{$2}/g;
 
   # Format the stars.
 #  $t =~ s/>\*</>\\gostar</g;
   # Actually, don't. I am just going to suppress them anyways.
 
   # Format math.
-  $t =~ s/<var>(.*?)<\/var>/{$1}/g;
+  $t =~ s/<var>(.*?)<\/var>/\\raMath{$1}/g;
 
   # Aligning every paragraph would not be smart. Changing alignment at
   # transitions between worlds is, so we need to detect them.
@@ -206,13 +205,13 @@ while (my ($id, $edit) = each %edits) {
   # where letters denote alignment data.
 
   # Now we set the initial world
-  $t =~ s/^l-</\\SetWorld{reality}\n\n/;
-  $t =~ s/^c-</\\SetWorld{between}\n\n/;
-  $t =~ s/^r-</\\SetWorld{tannaka}\n\n/;
+  $t =~ s/^l-</\\raGo*{reality}\n\n/;
+  $t =~ s/^c-</\\raGo*{between}\n\n/;
+  $t =~ s/^r-</\\raGo*{tannaka}\n\n/;
   # and format transitions with user defined commands
-  $t =~ s/>-[^l]l-</\n\n\\SwitchWorld{reality}\n\n/g;
-  $t =~ s/>-[^c]c-</\n\n\\SwitchWorld{between}\n\n/g;
-  $t =~ s/>-[^r]r-</\n\n\\SwitchWorld{tannaka}\n\n/g;
+  $t =~ s/>-[^l]l-</\n\n\\raGo{reality}\n\n/g;
+  $t =~ s/>-[^c]c-</\n\n\\raGo{between}\n\n/g;
+  $t =~ s/>-[^r]r-</\n\n\\raGo{tannaka}\n\n/g;
   # while ignoring redundant
   $t =~ s/>-(l|c|r)\1-</\n\n/g;
   # and trailing information
@@ -226,7 +225,7 @@ while (my ($id, $edit) = each %edits) {
   # Ampersands.
   $t =~ s/&amp;/\\&/g;
   # Slashes. To allow breaks.
-#  $t =~ s/\//\\raSlash /g;
+  $t =~ s/\//\\raSlash /g;
 
   # Format apostrophes. (Handles emphasis on the left.)
   $t =~ s/\b(?<=})?'\b/’/g;
