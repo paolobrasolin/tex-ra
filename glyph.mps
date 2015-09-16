@@ -1,4 +1,3 @@
-beginfig(1);
 path p;
 p :=
   (22.0270,28.8280) .. controls (22.2070,28.7540) and
@@ -135,8 +134,9 @@ p :=
   (28.1600,24.5120) and (27.4880,24.6760) .. (26.8360,24.9020) .. controls
   (24.8360,25.6020) and (22.9260,26.6410) .. (21.3160,28.0270) .. controls
   (21.2580,28.0780) and (21.9730,28.8790) .. (22.0270,28.8280) -- cycle;
-fill p;
-endfig;
+
+beginfig(0); unfill p; endfig;
+beginfig(1);   fill p; endfig;
 
 beginfig(2);
 %size=10pt, ht=5.69055pt, dp=1.13809pt, wd=10.47058pt

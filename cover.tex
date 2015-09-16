@@ -1,0 +1,130 @@
+% ###################################################################### START #
+
+% ================================================================== DEBUGGING =
+
+%\version[temporary]
+%\showframe[edge]
+%\showboxes
+
+% ====================================================================== PDF/X =
+
+\setupinteraction
+  [title=ra,
+   author=Sam Hughes,
+   keyword={{KEYWORD1, KEYWORD2}, KEYWORD3}]
+
+\setupbackend
+  [format=PDF/X-3:2002,
+   intent=Blurb_ICC_Profile.icc]
+
+% =================================================================== LANGUAGE =
+
+\language[uk]
+
+% ====================================================================== FONTS =
+
+\definefontfeature[default]
+  [protrusion=quality,expansion=quality,itlc=yes,liga=yes]
+
+\setupbodyfont [libertine,10pt]
+
+\definefontsynonym [SerifDisplay] [file:LinLibertine_DR] [features=default]
+\definefontsynonym [SerifSemiBold] [file:LinLibertine_RZ] [features=default]
+
+\definebodyfont [10pt] [rm]
+  [tfAuthorCover=SerifDisplay sa 1.67,
+   tfAuthorSpine=SerifDisplay sa 1.67,
+   tfTeaser=SerifSemiBold sa 1,
+   tfTitleCover=SerifBold sa 7.72,
+   tfTitleSpine=SerifBold sa 4.62]
+
+\definebodyfontenvironment[10pt][em=italic]
+
+% ===================================================================== GLYPHS =
+
+\def\Pol{\externalfigure[glyph.0][width=42bp]}
+
+% ===================================================================== LAYOUT =
+
+\startcolor[white]
+
+
+
+\definepapersize [cover]     [width=789bp,height=576bp]
+\definepapersize [overcover] [width=807bp,height=594bp]
+\setuppapersize[cover][overcover]
+\setuplayout[location=middle]
+
+
+
+\defineoverlay[backdrop][{\externalfigure[cover.jpg]}]
+\setupbackgrounds[paper][background=backdrop]
+
+\definelayer [backcover]  [x=  0bp,y=0bp,width=360bp,height=576bp]
+\definelayer [spine]      [x=360bp,y=0bp,width= 69bp,height=576bp]
+\definelayer [frontcover] [x=429bp,y=0bp,width=360bp,height=576bp]
+
+\definelayerpreset [hang] [corner=top,location=bottom]
+\definelayerpreset [rise] [corner=bottom,location=top]
+
+\setlayerframed[backcover]
+  [preset=rise,voffset=36bp,hoffset=180bp,width=168bp,height=73bp]{}
+
+\setlayerframed[backcover]
+  [width=168bp,align={stretch,nothyphenated,hz,hanging},
+   preset=hang,hoffset=180bp,voffset=96bp,frame=off]
+  {\tfTeaser Magic is real.
+   \blank[big]
+   Discovered in the ’70s by a nonagenary
+   Indian physicist, magic is now a bona
+   fide field of engineering. There is magic
+   in heavy industry and magic in your
+   home. It is what's next after electricity.
+   \blank[medium]
+   Student mage Laura Ferno has designs
+   on the future: her mother died trying
+   to reach space using magic, and Laura
+   wants to succeed where she failed. But
+   first, she has to work out what went
+   wrong. And who her mother really was.
+   \blank[medium]
+   And whether, indeed, she is dead at all…}
+
+\setuprotate[rotation=-90]
+
+\setlayer[spine]
+  [preset=hang,hoffset=34.5bp,voffset=36bp]
+  {\rotate{\tfAuthorSpine Sam Huges}}
+
+\setlayer[spine]
+  [preset=middle,voffset=-72bp]            
+  {\rotate{\tfTitleSpine ra}}
+
+\setlayer[spine]
+  [preset=rise,hoffset=34.5bp,voffset=18bp]
+  {\Pol}
+
+\setlayer[frontcover]
+  [preset=hang,hoffset=180bp,voffset=45bp]
+  {\tfAuthorCover Sam Hughes}
+
+\setlayer[frontcover]
+  [preset=rise,hoffset=180bp,voffset=90bp]
+  {\tfTitleCover ra}
+
+
+%\def\CoverSafeBox{\framed[width=324bp,height=540bp]{}}
+%\def\SpineBox{\framed[width=69bp,height=576bp]{}}
+%\setlayer[backcover] [corner=middle,location=middle]{\CoverSafeBox}
+%\setlayer[frontcover][corner=middle,location=middle]{\CoverSafeBox}
+%\setlayer[spine]     [corner=middle,location=middle]{\SpineBox}
+
+\setupbackgrounds[page][background={backcover,spine,frontcover}]
+
+\setuppagenumbering[location=]
+
+% ####################################################################### TEXT #
+
+\starttext\null\stoptext
+
+% ####################################################################### STOP #
