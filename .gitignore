@@ -1,11 +1,22 @@
 *
 
-!compile.sh
-!fetch.pl
 !.gitignore
-!glyph.mps
+
+!README.md
+
 !LEGACY
 !LEGACY/*
+
+!fetch.pl
+
+!glyph.mps
+
+!cover.jpg
+!cover.psd.bz2
+
+!common.tex
+
 !main.tex
 !cover.tex
-!README.md
+
+!compile.sh

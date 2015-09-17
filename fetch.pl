@@ -49,8 +49,7 @@ sub Fetch {
 # ====================================================== CHAPTERS EDITS HASHES =
 
 my %edits = (
-  "city"          => { "'Scuse" => "’Scuse"
-                        },
+  "city"          => { "'Scuse" => "’Scuse" },
   "sufficiently"  => { '<tt></tt>zui ixuv ixuv' => '<tt>zui ixuv ixuv</tt>',
                        '<tt></tt>dulaku' => '<tt>dulaku</tt>',
                        "my tutors' knowledge" => "my tutors’ knowledge",
@@ -64,14 +63,14 @@ my %edits = (
                        "40 miles' range" => "40 miles’ range",
                        "the Fernos' spot" => "the Fernos’ spot",
                        'O<sub>2</sub>' => 'O₂' },
-  "know"          => { # ltf15
+  "know"          => { '<tt>ltf15</tt>' => '{\Terminal ltf15}',
                        '<tt></tt>uum' => '<tt>uum</tt>',
                        "four weeks' rent" => "four weeks’ rent",
                        '+ <var>S</var><sub><var>t</var>;<var>&tau;</var></sub>'
-                         => 'TODO' },
+                         => '{\STensor}' },
   "ragdoll"       => { "Tómas' response" => "Tómas’ response" },
   "broken"        => { "Atlantis' nose cone" => "Atlantis’ nose cone", 
-                       '√3' => '√3½'  },
+                       '√3' => '{\SqrtThree}'  },
   "thaumonuclear" => { 'SO<sub>2</sub>' => 'SO₂' },
   "jesus"         => {},
   "space"         => { "five years' time" => "five years’ time",
@@ -79,7 +78,7 @@ my %edits = (
   "yantra"        => {},
   "daemons"       => { "St. Nicholas' Hill" => "St.~Nicholas’ Hill",
                        'L<sup>A</sup>T<sub>E</sub>X' => '\LaTeX' },
-  "abstract"      => { 'א**' => '\aleph**' },
+  "abstract"      => { 'א**' => '\AlephStars' },
   "death"         => {},
   "zero"          => {},
   "aum"           => {},
@@ -94,7 +93,7 @@ my %edits = (
 #                       'χ' => '$\chi$' }, # loner among roman, don't unkern
 },
   "cabal"         => { "'72" => "’72" },
-  "protagonism"   => { '..........' => 'HOLY CRAP DOTS' },
+  "protagonism"   => { '..........' => '\LongEllipsis' },
   "scrap"         => { '10<sup>18</sup>' => '10¹⁸' },
   "inferno"       => {},
   "darkness"      => {},
@@ -111,7 +110,7 @@ my %edits = (
                        "'72" => "’72",
                        "'73" => "’73" },
   "machine"       => { "astronauts' lives" => "astronauts’ lives",
-                       'א**' => '\aleph**' },
+                       'א**' => '\AlephStars' },
   "work"          => {},
   "just"          => { "'ports" => "’ports",
                        "the blinds' edges" => "the blinds’ edges" },
@@ -180,14 +179,14 @@ while (my ($id, $edit) = each %edits) {
   $t =~ s/<(i|em)>(.*?)<\/\1>/{\\em $2}/g;
 
   # Format magic.
-  $t =~ s/<(tt|code)>(.*?)<\/\1>/{\\bf $2}/g;
+  $t =~ s/<(tt|code)>(.*?)<\/\1>/{\\Magic $2}/g;
 
   # Format the stars.
 #  $t =~ s/>\*</>\\gostar</g;
   # Actually, don't. I am just going to suppress them anyways.
 
   # Format math.
-  $t =~ s/<var>(.*?)<\/var>/{$1}/g;
+  $t =~ s/<var>(.*?)<\/var>/{\\em $1}/g;
 
   # Aligning every paragraph would not be smart. Changing alignment at
   # transitions between worlds is, so we need to detect them.

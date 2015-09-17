@@ -1,102 +1,66 @@
 % ###################################################################### START #
 
+\input common
+
 % ================================================================== DEBUGGING =
 
 %\version[temporary]
-\showframe[edge]
-
-% ====================================================================== PDF/X =
-
-\setupinteraction
-  [title=ra,
-   author=Sam Hughes,
-   keyword={{KEYWORD1, KEYWORD2}, KEYWORD3}]
-
-\setupbackend
-  [format=PDF/X-3:2002,
-   intent=Blurb_ICC_Profile.icc]
+%\showframe[trim]
+%\showboxes
+%\showmakeup
 
 % ====================================================================== FONTS =
 
-\starttypescriptcollection[libertine]
-  \starttypescript [serif] [libertine]
-    \definefontsynonym [Libertine-Regular]  [file:LinLibertine_R]
-    \definefontsynonym [Libertine-Italic]   [file:LinLibertine_RI]
-    \definefontsynonym [Libertine-Bold]     [file:LinLibertine_RB]
-    \definefontsynonym [Libertine-SemiBold] [file:LinLibertine_RZ]
-    \definefontsynonym [Libertine-Display]  [file:LinLibertine_DR]
-  \stoptypescript
-  \starttypescript [serif] [libertine] [name]
-%    \setups[font:fallback:serif]
-    \definefontsynonym [Serif]          [Libertine-Regular]  [features=default]
-    \definefontsynonym [SerifItalic]    [Libertine-Italic]   [features=default]
-    \definefontsynonym [SerifBold]      [Libertine-Bold]     [features=default]
-    \definefontsynonym [SerifSemiBold]  [Libertine-SemiBold] [features=default]
-    \definefontsynonym [SerifDisplay]   [Libertine-Display]  [features=default]
-  \stoptypescript
-  \starttypescript [libertine]
-    \definetypeface [libertine] [rm] [serif] [libertine] [default]
-%    \quittypescriptscanning
-  \stoptypescript
-\stoptypescriptcollection
-
-\definefontfeature[default][libertine]
-  [protrusion=quality,
-   expansion=quality,
-   itlc=yes,
-   liga=yes]
-
-
-\setupbodyfont [libertine,10pt]
-
-\definebodyfont [10pt] [rm]
-  [df=SerifDisplay sa 1.000,
-   dfb=SerifDisplay sa 2.074,
-   ssb=SerifSemiBold sa 0.535,
-   bfe=SerifBold sa 5]
-
-\definealternativestyle [display]  [\df] []
-
-\definebodyfontenvironment[10pt]
-  [em=italic]
-
-\setupalign[hz,hanging]
-\setuptolerance[horizontal,strict]
-\hbadness=1200
-
-\setuppagenumbering[alternative=doublesided,location=footer]
+\definebodyfont [11pt] [rm]
+  [ChapterFont=SerifDisplay sa 2.074,
+   AuthorFont=SerifDisplay sa 2.074,
+   TitleFont=SerifBold sa 5,
+   FatPageNumberFont=SerifSemiBold sa 1,
+   SubScriptFont=SerifSemiBoldItalic sa 0.535,
+   Terminal=SerifMono,
+   Magic=SerifBold]
 
 % ===================================================================== LAYOUT =
 
-\definepapersize [pocket]     [width=5.000in,height=8.000in]
-\definepapersize [overpocket] [width=5.125in,height=8.250in]
-\setuppapersize[pocket][overpocket]
+\setuppapersize[book]%[bookpaper]
 \setuplayout
-  [topspace=36bp, height=504bp,
+  [topspace=1.25\BookInset, % 1.25 + ### + 1.25
+   height=\dimexpr\BookHeight-2.5\BookInset\relax,
    header=0bp, headerdistance=0bp,
-   footer=18bp,footerdistance=18bp,
-   backspace=63bp, width=261bp,
+   footer=18bp,footerdistance=6bp, % there are 36bp to split here
+   backspace=3.5\BookInset, % = 2.5 + 1 + ### + 1 + 1
+   width=\dimexpr\BookWidth-5.5\BookInset\relax,
    leftmargin=0bp, leftmargindistance=0bp,
    rightmargin=0bp, rightmargindistance=0bp,
    location={doublesided,middle,left}]
 
-% =================================================================== HEADINGS =
+% ============================================================= GENERAL DESIGN =
 
-\unexpanded\def\HeadTitle#1#2%
-  {\framed[width=\hsize,frame=off,align={flushright,hanging}]{#2}}
+\setupalign[hz,hanging]
+\setupindenting[yes,small]
+
+\setuptolerance[horizontal,strict]
+%\setuptolerance[vertical,tolerant]
+\hbadness=1200
+
+\setuppagenumbering[alternative=doublesided,location=footer]
+
+% =================================================================== HEADINGS =
 
 \definemeasure [beforechapterspace] [0.3\textheight]
 \definemeasure [afterchapterspace]  [0.2\textheight]
 
 \setuphead[chapter]
-  [page={empty,footer,right}, style=dfb,
+  [page={last},%{empty,footer,right},
+   alternative=margin,
+   style=ChapterFont,
+   align={nothyphenated,hz,hanging,flushright,stretch,verytolerant},
+   number=no,
    before={\blank[\measure{beforechapterspace},force]},
-   command=\HeadTitle,
    after={\blank[\measure{afterchapterspace}]}]
 
 % =================================================================== LANGUAGE =
 
-\language[uk]
 \hyphenation{ka-dhu-nda boo-o-o-o-o-o-o-o-o-o-oop}
 
 % ======================================================================== TOC =
@@ -109,27 +73,25 @@
 \setuplist[chapter]
   [alternative=a,
    headnumber=no,
-   margin=3em,
+   margin=0.3\hsize,
    pagecommand=\PageCommand]
 
 % =========================================================== CHAPTER HANDLING =
 
 \unprotect
-  \def\M@keChapter<#1>#2(#3){
-    \doifemptyelse{#3}
-      {\startchapter[title={#2}]}
-      {\startchapter[title={#3},list={#2}]}
-      \input chapters/#1
+  \def\M@keChapter#1<#2>{
+    \startchapter[title={#2}]
+%      \input chapters/#1
     \stopchapter}
   \def\MakeChapter#1{\@EA\M@keChapter#1}
 \protect
   
-% ===================================================================== WORLDS =
+% ============================================================= WORLD HANDLING =
 
 \let\CurrentWorld\relax
 \def\SetWorld#1{\gdef\CurrentWorld{#1}}
 \def\SwitchWorld#1{\SwitchBreak{#1}\SetWorld{#1}}
-\def\SwitchBreak#1{\blank[big]{\hfil\useMPgraphic{#1}\hfil}\blank[big]\nobreak}
+\def\SwitchBreak#1{\blank[big]{\hfil\useMPgraphic{#1}\hfil}\blank[big]\nobreak\indenting[next]}
 
 \startreusableMPgraphic{reality}
   draw fullcircle scaled 5.5;
@@ -149,16 +111,6 @@
        withpen pencircle scaled 1.5;
 \stopreusableMPgraphic
 
-% ================================================================= TITLE PAGE =
-
-\startuseMPgraphic{sol}
-  path p,q,r;
-  p:=fullcircle scaled (2*72*12/12);
-  q:=fullcircle scaled (2*72*11/12);
-  r:=fullcircle scaled (2*72*4/12);
-  fill p; unfill q; fill r;
-\stopuseMPgraphic
-
 % =============================================================== PAGE NUMBERS =
 
 \startuseMPgraphic{tannakablot}
@@ -170,24 +122,27 @@
 \setuppagenumbering[command=\RaPageNumbering]
 
 \def\RaPageNumbering#1{\doifelse{\CurrentWorld}{tannaka}
-  {\inframed[frame=no,background=tannakablot,offset=2pt]{\white #1}}{#1}}
-
+  {\inframed[frame=no,background=tannakablot,offset=2pt]{\white\FatPageNumberFont #1}}{#1}}
 
 % ===================================================================== GLYPHS =
 
+\startuseMPgraphic{sol}
+  path p,q,r;
+  p:=fullcircle scaled (1.2*2*72*15/15);
+  q:=fullcircle scaled (1.2*2*72*14/15);
+  r:=fullcircle scaled (1.2*2*72*5/15);
+  fill p; unfill q; fill r;
+\stopuseMPgraphic
+
 \def\Pol{\externalfigure[glyph.1][width=72bp]}
-\def\Aum{\strut\raise-0.07em\hbox{\smash{\externalfigure[glyph.2][height=1.2em]}}}
 
-%\setupblackrules
-%  [width=1ex,
-%   height=0.77em,
-%   depth=-0.73em]
-%\setupframed
-%  [height=1em,location=keep,offset=overlay]
-%less √\rlap{\blackrule}3√\framed{3rad} is the measure $\sqrt{3}$ %½}
+\def\Aum{\strut\raise-0.1em\hbox{\smash{%
+  \externalfigure[glyph.2][height=0.8em]}}}
 
-%\showboxes
-%\showmakeup
+\def\STensor{\em +S\raise-.26ex\hbox{\SubScriptFont t;τ;}}
+\def\SqrtThree{√\rlap{\blackrule[width=0.55em,height=0.77em,depth=-0.73em]}3}
+\def\AlephStars{ℵ**}
+\def\LongEllipsis{..........}
 
 % ####################################################################### TEXT #
 
@@ -203,26 +158,25 @@
   \startstandardmakeup[align=center,bottom=]
     {\hfil\Pol\hfil}
   \stopstandardmakeup
-  
-  \definemeasure [halfinch] [36bp]
-  \startstandardmakeup[align=center,doublesided=no,bottom={\blank[\measure{halfinch}]}]
-    \dfb Sam Hughes \blank[2*big]
-    \bfe ra \vfil\vfil\vfil
+
+  \startstandardmakeup[align=center,doublesided=no]
+    \AuthorFont Sam Hughes \blank[2*big]
+    \TitleFont ra \vfil\vfil\vfil
     {\hfil\useMPgraphic{sol}\hfil}
   \stopstandardmakeup
   
-  \startstandardmakeup[align=center,page=no,bottom=]
+  \startstandardmakeup[align=center,page=no,bottom=,style=small]
     September 2015 \\
     Limited edition of a single copy \blank[2*big]
-    {\em Dedicato alla luce che effondi} \vfil\vfil
+    {\it Dedicato alla luce che effondi} \vfil\vfil
     ra © Sam Hughes 2011—14 \\
     Cover images courtesy of NASA \\
     Edited and typeset by Paolo al-Imkānī Brasolin
   \stopstandardmakeup
 
   \start
-    \setuphead[chapter][page=no]
-    \setupinterlinespace[0.9]
+%    \setuphead[chapter][page=no]
+    \setupinterlinespace[0.6]
     \completecontent
   \stop
 
@@ -230,58 +184,53 @@
 
 \startbodymatter
 
-  \setcounter[userpage][-1]
+  \setcounter[userpage][1]
 
   \processcommalist
-    [<city> Thaumic city (),
-     <sufficiently> Sufficiently advanced technology%
-                   (Sufficiently advanced\\ technology),
-    {<ignorance> From ignorance, lead me to truth%
-                (From ignorance,\\ lead me to truth)},
-     <isnt> Magic isn’t (),
-     <know> What you don’t know (),
-     <ragdoll> Ragdoll physicist (),
-     <broken> Broken ’verse (),
-     <thaumonuclear> Thaumonuclear (),
-     <jesus> The Jesus machine (),
-     <space> Space magic (),
-     <yantra> The seventh impossible thing%
-             (The seventh\\ impossible thing),
-     <daemons> Daemons (),
-     <abstract> Abstract weapon (),
-     <death> Death surrounds this machine%
-            (Death surrounds\\ this machine),
-     <zero> Zero day (),
-     <aum> \Aum (),
-     <bare> Bare metal (),
-     <people> Hatt’s people (),
-     <deeper> Deeper magic (),
-     <cabal> There is no Cabal (),
-     <protagonism> Protagonism (),
-     <scrap> Scrap brain zone (),
-     <inferno> Inferno (),
-    {<darkness> From darkness, lead me to light%
-               (From darkness,\\ lead me to light)},
-     <direct> Direct sunlight (),
-     <war> Abstract war (),
-     <real> Everything is real (),
-     <hate> Why do you hate Ra (),
-     <thursdayism> Last thursdayism (),
-     <akheron> Akheron (),
-     <all> All hell (),
-    {<rajesh> From death, lead me to immortality%
-             (From death,\\ lead me to immortality)},
-     <machine> Machine space (),
-     <work> It has to work (),
-     <just> Why not just (),
-     <destructor> Destructor ()]\MakeChapter
+    [city          <Thaumic city>,
+     sufficiently  <Sufficiently advanced technology>,
+    {ignorance     <From ignorance, lead~me~to~truth>},
+     isnt          <Magic isn’t>,
+     know          <What you don’t know>,
+     ragdoll       <Ragdoll physicist>,
+     broken        <Broken ’verse>,
+     thaumonuclear <Thaumonuclear>,
+     jesus         <The Jesus machine>,
+     space         <Space magic>,
+     yantra        <The seventh impossible thing>,
+     daemons       <Daemons>,
+     abstract      <Abstract weapon>,
+     death         <Death surrounds this~machine>,
+     zero          <Zero day>,
+     aum           <\Aum>,
+     bare          <Bare metal>,
+     people        <Hatt’s people>,
+     deeper        <Deeper magic>,
+     cabal         <There is no Cabal>,
+     protagonism   <Protagonism>,
+     scrap         <Scrap brain zone>,
+     inferno       <Inferno>,
+    {darkness      <From darkness, lead me~to~light>},
+     direct        <Direct sunlight>,
+     war           <Abstract war>,
+     real          <Everything is real>,
+     hate          <Why do you hate Ra>,
+     thursdayism   <Last thursdayism>,
+     akheron       <Akheron>,
+     all           <All hell>,
+    {rajesh        <From death, lead me~to~immortality>},
+     machine       <Machine space>,
+     work          <It has to work>,
+     just          <Why not just>,
+     destructor    <Destructor>]\MakeChapter
 
 \stopbodymatter
 
 \startbackmatter
 
-  \startstandardmakeup[page=empty]
-    \startnarrower[3*middle] \small
+  \startstandardmakeup[page=empty,style=small]
+    \setupnarrower[middle=35.5bp]
+    \startnarrower[middle]
       \setupalign[hz,hanging,nothyphenated]
       \parfillskip=0pt
       Printed in September 2015 by Blurb, this book was

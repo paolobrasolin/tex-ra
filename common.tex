@@ -1,0 +1,58 @@
+% ###################################################################### START #
+
+% ====================================================================== PDF/X =
+
+\setupinteraction
+  [title=ra,
+   author=Sam Hughes,
+   keyword={{KEYWORD1, KEYWORD2}, KEYWORD3}]
+
+\setupbackend
+  [format=PDF/X-3:2002]
+% intent=Blurb_ICC_Profile.icc
+
+% =================================================================== LANGUAGE =
+
+\language[uk]
+
+% ====================================================================== FONTS =
+
+\definefontfeature[default]
+  [protrusion=quality,expansion=quality,itlc=yes,liga=yes]
+
+\setupbodyfont [libertine,11pt]
+
+\definefontsynonym [SerifDisplay]  [file:LinLibertine_DR] [features=default]
+\definefontsynonym [SerifSemiBold] [file:LinLibertine_RZ] [features=default]
+\definefontsynonym [SerifSemiBoldItalic] 
+                                   [file:LinLibertine_RI] [features=default]
+\definefontsynonym [SerifMono]     [file:LinLibertine_M]  [features=default]
+
+\definebodyfontenvironment [11pt] [em=italic]
+
+% ===================================================================== LAYOUT =
+
+\newdimen\BookWidth  \BookWidth=5in
+\newdimen\BookHeight \BookHeight=8in
+\newdimen\BookSpine  \BookSpine=77bp
+\newdimen\BookInset  \BookInset=18bp
+\newdimen\BookBleed  \BookBleed=9bp
+\newdimen\CoverWidth \CoverWidth=\dimexpr\BookSpine+2\BookWidth\relax
+
+\definepapersize[cover]
+  [width=\CoverWidth,
+   height=\BookHeight]
+
+\definepapersize[coverpaper]
+  [width=\dimexpr\CoverWidth+2\BookBleed\relax,
+   height=\dimexpr\BookHeight+2\BookBleed\relax]
+
+\definepapersize[book]
+  [width=\BookWidth,
+   height=\BookHeight]
+
+\definepapersize[bookpaper]
+  [width=\dimexpr\BookWidth+\BookBleed\relax,
+   height=\dimexpr\BookHeight+2\BookBleed\relax]
+
+% ####################################################################### STOP #
