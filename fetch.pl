@@ -72,7 +72,7 @@ my %edits = (
   "broken"        => { "Atlantis' nose cone" => "Atlantis’ nose cone", 
                        '√3' => '{\SqrtThree}'  },
   "thaumonuclear" => { 'SO<sub>2</sub>' => 'SO₂' },
-  "jesus"         => {},
+  "jesus"         => { '<em>was</em><var>X</var>' => '{\em was} {\em X}' },
   "space"         => { "five years' time" => "five years’ time",
                        'O<sub>2</sub>' => 'O₂' },
   "yantra"        => {},
@@ -86,12 +86,11 @@ my %edits = (
   "people"        => {},
   "deeper"        => { "mages' toolboxes" => "mages’ toolboxes",
                        "'88" => "’88",
-                       "'89" => "’89"
-#                       'ζ' => '$\zeta\kern-1.23999pt$', # among italic, unkern
-#                       'ι' => '$\iota$', # has no kerning
-#                       'EMμ' => '\textit{EM$\mu$}',
-#                       'χ' => '$\chi$' }, # loner among roman, don't unkern
-},
+                       "'89" => "’89",
+                       'ζ' => '{\em ζ}',
+                       'ι' => '{\em ι}',
+                       'EMμ' => 'EM{\em μ}',
+                       'χ' => '{\em χ}' },
   "cabal"         => { "'72" => "’72" },
   "protagonism"   => { '..........' => '\LongEllipsis' },
   "scrap"         => { '10<sup>18</sup>' => '10¹⁸' },
@@ -166,7 +165,7 @@ while (my ($id, $edit) = each %edits) {
 
   # Apply edits.
   while (my ($original, $fixed) = each $edit) {
-    $t =~ s/\Q$original/{\\red $fixed}/g;
+    $t =~ s/\Q$original/$fixed/g;
   }
 
   # I'll just leave this here for sanity checks:

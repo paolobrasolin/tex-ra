@@ -12,17 +12,20 @@
 % ====================================================================== FONTS =
 
 \definebodyfont [11pt] [rm]
-  [ChapterFont=SerifDisplay sa 2.074,
-   AuthorFont=SerifDisplay sa 2.074,
+  [ChapterFont=SerifDisplay sa 2,
+   AuthorFont=SerifDisplay sa 2,
    TitleFont=SerifBold sa 5,
+   HalfTitleFont=SerifBold sa 2,
    FatPageNumberFont=SerifSemiBold sa 1,
    SubScriptFont=SerifSemiBoldItalic sa 0.535,
    Terminal=SerifMono,
    Magic=SerifBold]
 
+%\let\Magic\sc
+
 % ===================================================================== LAYOUT =
 
-\setuppapersize[book]%[bookpaper]
+\setuppapersize[book][bookpaper]
 \setuplayout
   [topspace=1.25\BookInset, % 1.25 + ### + 1.25
    height=\dimexpr\BookHeight-2.5\BookInset\relax,
@@ -37,18 +40,18 @@
 % ============================================================= GENERAL DESIGN =
 
 \setupalign[hz,hanging]
+\setupalign[line]
 \setupindenting[yes,small]
 
 \setuptolerance[horizontal,strict]
-%\setuptolerance[vertical,tolerant]
-\hbadness=1200
+\hbadness=1400
 
 \setuppagenumbering[alternative=doublesided,location=footer]
 
 % =================================================================== HEADINGS =
 
-\definemeasure [beforechapterspace] [0.3\textheight]
-\definemeasure [afterchapterspace]  [0.2\textheight]
+\definemeasure [beforechapterspace] [0.36\textheight]
+\definemeasure [afterchapterspace]  [0.18\textheight]
 
 \setuphead[chapter]
   [page={last},%{empty,footer,right},
@@ -61,7 +64,14 @@
 
 % =================================================================== LANGUAGE =
 
-\hyphenation{ka-dhu-nda boo-o-o-o-o-o-o-o-o-o-oop}
+\hyphenation{
+  % just made these up
+  ka-dhu-nda boo-o-o-o-o-o-o-o-o-o-oop me-cha-noid
+  % UK, valid
+  Hen-ders ob-serves un-clenches im-possible as-ter-oid to-wards
+  % US, valid (cheating)
+  aero-space threat-ened
+}
 
 % ======================================================================== TOC =
 
@@ -81,7 +91,7 @@
 \unprotect
   \def\M@keChapter#1<#2>{
     \startchapter[title={#2}]
-%      \input chapters/#1
+      \input chapters/#1
     \stopchapter}
   \def\MakeChapter#1{\@EA\M@keChapter#1}
 \protect
@@ -90,8 +100,8 @@
 
 \let\CurrentWorld\relax
 \def\SetWorld#1{\gdef\CurrentWorld{#1}}
-\def\SwitchWorld#1{\SwitchBreak{#1}\SetWorld{#1}}
-\def\SwitchBreak#1{\blank[big]{\hfil\useMPgraphic{#1}\hfil}\blank[big]\nobreak\indenting[next]}
+\def\SwitchWorld#1{\SwitchBreak{#1}\SetWorld{#1}\indenting[next]}
+\def\SwitchBreak#1{\blank[medium]{\hfil\useMPgraphic{#1}\hfil}\blank[medium]\nobreak}
 
 \startreusableMPgraphic{reality}
   draw fullcircle scaled 5.5;
@@ -121,8 +131,11 @@
 
 \setuppagenumbering[command=\RaPageNumbering]
 
-\def\RaPageNumbering#1{\doifelse{\CurrentWorld}{tannaka}
-  {\inframed[frame=no,background=tannakablot,offset=2pt]{\white\FatPageNumberFont #1}}{#1}}
+\def\RaPageNumbering#1{%
+  \doifelse{\CurrentWorld}{between}{}
+    {\doifelse{\CurrentWorld}{tannaka}
+       {\inframed[frame=no,background=tannakablot,offset=2pt]
+          {\white\FatPageNumberFont #1}}{#1}}}
 
 % ===================================================================== GLYPHS =
 
@@ -180,6 +193,10 @@
     \completecontent
   \stop
 
+  \startstandardmakeup[align=center,style=HalfTitleFont]
+    ra\vfil
+  \stopstandardmakeup
+
 \stopfrontmatter
 
 \startbodymatter
@@ -188,17 +205,29 @@
 
   \processcommalist
     [city          <Thaumic city>,
-     sufficiently  <Sufficiently advanced technology>,
-    {ignorance     <From ignorance, lead~me~to~truth>},
-     isnt          <Magic isn’t>,
+     sufficiently  <Sufficiently advanced technology>]\MakeChapter
+
+  \startchapter[title={From ignorance,\\ lead me to truth},
+                list={From ignorance, lead me to truth}]
+    \input chapters/ignorance
+  \stopchapter
+
+  \processcommalist
+    [isnt          <Magic isn’t>,
      know          <What you don’t know>,
      ragdoll       <Ragdoll physicist>,
      broken        <Broken ’verse>,
      thaumonuclear <Thaumonuclear>,
      jesus         <The Jesus machine>,
-     space         <Space magic>,
-     yantra        <The seventh impossible thing>,
-     daemons       <Daemons>,
+     space         <Space magic>]\MakeChapter
+
+  \startchapter[title={The seventh\\ impossible\\ thing},
+                list={The seventh impossible thing}]
+    \input chapters/yantra
+  \stopchapter
+
+  \processcommalist
+    [daemons       <Daemons>,
      abstract      <Abstract weapon>,
      death         <Death surrounds this~machine>,
      zero          <Zero day>,
@@ -209,20 +238,34 @@
      cabal         <There is no Cabal>,
      protagonism   <Protagonism>,
      scrap         <Scrap brain zone>,
-     inferno       <Inferno>,
-    {darkness      <From darkness, lead me~to~light>},
-     direct        <Direct sunlight>,
+     inferno       <Inferno>]\MakeChapter
+
+  \startchapter[title={From darkness,\\ lead me to light},
+                list={From darkness, lead me to light}]
+    \input chapters/darkness
+  \stopchapter
+
+  \processcommalist
+    [direct        <Direct sunlight>,
      war           <Abstract war>,
      real          <Everything is real>,
      hate          <Why do you hate Ra>,
      thursdayism   <Last thursdayism>,
      akheron       <Akheron>,
-     all           <All hell>,
-    {rajesh        <From death, lead me~to~immortality>},
-     machine       <Machine space>,
+     all           <All hell>]\MakeChapter
+
+  \startchapter[title={From death,\\ lead me to immortality},
+                list={From death, lead me to immortality}]
+    \input chapters/rajesh
+  \stopchapter
+
+  \processcommalist
+    [machine       <Machine space>,
      work          <It has to work>,
      just          <Why not just>,
      destructor    <Destructor>]\MakeChapter
+
+  \page[last]
 
 \stopbodymatter
 
@@ -236,7 +279,7 @@
       Printed in September 2015 by Blurb, this book was
       composed using \ConTeXt\ and set with typefaces from
       the Linux Libertine family designed by Philipp Poll
-      — the only exception being the indian glyph for Oṃ,
+      — the only exception being the Indian glyph for Oṃ,
       taken from the devanāgarī fonts by Frans Velthuis.
       \blank[big]
       Three images by NASA Goddard Space Flight Center
